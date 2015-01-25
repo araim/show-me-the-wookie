@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SolutionDependencyScanner
 {
-    public class ScanErrorEventArgs
+    public class ScanErrorEventArgs : EventArgs
     {
         public Exception ExceptionThrown { get; private set; }
         public string ErrorMessage { get; private set; }

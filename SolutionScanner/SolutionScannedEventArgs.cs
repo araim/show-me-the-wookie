@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace SolutionDependencyScanner
 {
-    class Program
+    public class SolutionScannedEventArgs:EventArgs
     {
-        static void Main(string[] args)
+        public SolutionScannedEventArgs(Solution s)
         {
+            Solution = s;
         }
+
+        public Solution Solution { get; private set; }
     }
 }

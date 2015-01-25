@@ -14,12 +14,19 @@ namespace ScannerRunner
             Scanner s = new Scanner(@"C:\Users\fox\Documents\visual studio 2013\Projects\show-me-the-wookie");
             s.ErrorEncountered += s_ErrorEncountered;
             s.SolutionScanned += s_SolutionScanned;
+            s.SolutionEncountered += s_SolutionEncountered;
             Console.WriteLine(s.ScanAndFindRoots());
+        }
+
+        static void s_SolutionEncountered(object sender, EventArgs e)
+        {
+            Console.WriteLine("[{0}] {1}: {2}", "INFO", sender, e);
         }
 
         static void s_SolutionScanned(object sender, EventArgs e)
         {
-            Console.WriteLine("[{0}] {1}: {2}", "INFO", sender, e);
+            SolutionScannedEventArgs se = e as SolutionScannedEventArgs;
+            Console.WriteLine("[{0}] {1}: {2}", "SCAN", sender, se.Solution);
         }
 
         static void s_ErrorEncountered(object sender, EventArgs e)

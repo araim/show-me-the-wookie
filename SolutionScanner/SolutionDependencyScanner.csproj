@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{A954A2F2-D16D-49D4-A505-A5E73A54CD4C}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SolutionDependencyScanner</RootNamespace>
     <AssemblyName>SolutionScanner</AssemblyName>
@@ -47,26 +47,28 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CWDev.SLNTools.Core">
-      <HintPath>lib\CWDev.SLNTools.Core.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IProjectScanner.cs" />
     <Compile Include="ISolutionScanner.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Project.cs" />
+    <Compile Include="ProjectReference.cs" />
+    <Compile Include="ProjectScanner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScanErrorEventArgs.cs" />
     <Compile Include="Scanner.cs" />
     <Compile Include="Solution.cs" />
+    <Compile Include="SolutionScannedEventArgs.cs" />
     <Compile Include="SolutionScanner.cs" />
   </ItemGroup>
   <ItemGroup>

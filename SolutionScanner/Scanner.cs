@@ -1,5 +1,4 @@
-﻿using CWDev.SLNTools.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,12 +10,14 @@ namespace SolutionDependencyScanner
     public sealed class Scanner
     {
         public delegate void ScanEvent(object sender, EventArgs e);
+        public event ScanEvent SolutionEncountered;
         public event ScanEvent SolutionScanned;
         public event ScanEvent ErrorEncountered;
 
 
         private readonly DirectoryInfo scanRoot;
         private readonly ISolutionScanner scanner;
+        private readonly IProjectScanner ps;
 
 
         public Scanner(string path)
@@ -33,7 +34,8 @@ namespace SolutionDependencyScanner
             {
                 throw new ArgumentException("Invalid path specified", "path");
             }
-            scanner = new SolutionScanner();
+            ps = new ProjectScanner();
+            scanner = new SolutionScanner(ps);
         }
 
 
@@ -89,10 +91,10 @@ namespace SolutionDependencyScanner
                 }
             }
         }
-        private void SendScanEvent(FileInfo f)
+        private void SendSolutionEncountered(FileInfo f)
         {
 
-            foreach (var err in SolutionScanned.GetInvocationList())
+            foreach (var err in SolutionEncountered.GetInvocationList())
             {
                 try
                 {
@@ -105,10 +107,28 @@ namespace SolutionDependencyScanner
             }
         }
 
+        private void SendScanEvent(FileInfo f, Solution s)
+        {
+
+            foreach (var err in SolutionScanned.GetInvocationList())
+            {
+                try
+                {
+                    err.DynamicInvoke(f, new SolutionScannedEventArgs(s));
+                }
+                catch (Exception)
+                {
+                    // can't do anything, ignore.
+                }
+            }
+        }
+
         private Solution scanSolution(FileInfo f)
         {
-            SendScanEvent(f);
-            return scanner.scan(f);
+            SendSolutionEncountered(f);
+            Solution s = scanner.scan(f);
+            SendScanEvent(f, s);
+            return s;
         }
 
     }

@@ -8,13 +8,17 @@ namespace SolutionDependencyScanner
     public class Solution
     {
         public string FullPath { get; set; }
-        public IList<Project> Projects { get; private set; }
+        public IList<ProjectReference> Projects { get; private set; }
 
 
         internal Solution()
         {
-            Projects = new List<Project>();
+            Projects = new List<ProjectReference>();
         }
 
+        public override string ToString()
+        {
+            return "Solution { FullPath = " + FullPath + ", Projects = " + string.Join(",", Projects) + "}";
+        }
     }
 }
