@@ -23,5 +23,13 @@ namespace SolutionDependencyScanner
         {
             return "Solution { Name = " + Name + ", FullPath = " + FullPath + ", Projects = " + string.Join(",", Projects) + "}";
         }
+
+        internal static Solution FromScaffold(SolutionScaffold sc)
+        {
+            Solution s = new Solution();
+            s.Name = sc.Name;
+            s.FullPath = sc.FullPath;
+            return s;
+        }
     }
 }

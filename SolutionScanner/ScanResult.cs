@@ -11,7 +11,7 @@ namespace SolutionDependencyScanner
 
         internal ISet<SolutionScaffold> Scaffolds { get; set; }
         public ISet<Solution> Solutions { get; internal set; }
-        public ISet<Project> Projects { get; internal set; }
+        public IDictionary<string,Project> Projects { get; internal set; }
         public Dictionary<string, Project> AssembliesMap { get; internal set; }
     }
 }

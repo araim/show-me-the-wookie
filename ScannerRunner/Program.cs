@@ -18,8 +18,8 @@ namespace ScannerRunner
             s.SolutionScanned += s_SolutionScanned;
             s.SolutionEncountered += s_SolutionEncountered;
             var sr = s.Scan();
-            foreach(Project p in sr.Projects){
-                Console.WriteLine(p);
+            foreach(var ss in sr.Solutions){
+                Console.WriteLine(ss);
             }
             
         }

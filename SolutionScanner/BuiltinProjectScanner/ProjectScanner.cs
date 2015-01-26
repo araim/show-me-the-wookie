@@ -14,6 +14,7 @@ namespace SolutionDependencyScanner.BuiltinProjectScanner
         private const string ProjectReferenceXPath = "/ns:Project/ns:ItemGroup/ns:ProjectReference";
         private const string DllReferenceXPath = "/ns:Project/ns:ItemGroup/ns:Reference/ns:HintPath";
         private const string AssemblyNameXPath = "/ns:Project/ns:PropertyGroup/ns:AssemblyName";
+        private const string ProjectGUIDXPath = "/ns:Project/ns:PropertyGroup/ns:ProjectGuid";
         private const string MSBuildNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
 
         private readonly XmlDocument xml;
@@ -35,10 +36,17 @@ namespace SolutionDependencyScanner.BuiltinProjectScanner
             proj = new Project();
             proj.Path = path;
             proj.AssemblyName = FindAssemblyName();
+            proj.ID = FindProjectGUID();
             ProcessProjectReferences(GetReferencedDll, DllReferenceXPath);
             ProcessProjectReferences(GetProjectReference, ProjectReferenceXPath);
 
             return proj;
+        }
+
+        private string FindProjectGUID()
+        {
+            XmlNode n = xml.SelectSingleNode(ProjectGUIDXPath, mgr);
+            return n.InnerText.Replace("}", "").Replace("{", "").ToUpperInvariant();
         }
 
         private string FindAssemblyName()

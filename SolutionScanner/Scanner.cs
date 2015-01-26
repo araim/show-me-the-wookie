@@ -43,13 +43,29 @@ namespace SolutionDependencyScanner
             scr.Scaffolds = set;
             ResolveProjects(scr);
             DetermineDependencies(scr);
+            FindSolutions(scr);
             return scr;
+        }
+
+        private void FindSolutions(ScanResult scr)
+        {
+            ISet<Solution> slns = new HashSet<Solution>();
+
+            foreach (SolutionScaffold sc in scr.Scaffolds)
+            {
+                Solution s = Solution.FromScaffold(sc);
+                foreach (ProjectReference pr in sc.Projects)
+                {
+                    s.Projects.Add(scr.Projects[pr.ID]);
+                }
+            }
+            scr.Solutions = slns;
         }
 
 
         private void ResolveProjects(ScanResult sr)
         {
-            ISet<Project> allProjects = new HashSet<Project>();
+            IDictionary<string, Project> allProjects = new Dictionary<string, Project>();
             Dictionary<string, Project> assembliesMap = new Dictionary<string, Project>();
 
             foreach (SolutionScaffold sln in sr.Scaffolds)
@@ -58,7 +74,7 @@ namespace SolutionDependencyScanner
                 {
                     IProjectScanner ps = new BuiltinProjectScanner.ProjectScanner(p.Path);
                     Project pr = ps.ScanProject();
-                    allProjects.Add(pr);
+                    allProjects.Add(pr.ID, pr);
                     assembliesMap[pr.AssemblyName] = pr;
                 }
             }
@@ -69,13 +85,13 @@ namespace SolutionDependencyScanner
 
         private void DetermineDependencies(ScanResult sr)
         {
-            foreach (Project p in sr.Projects)
+            foreach (Project p in sr.Projects.Values)
             {
                 IList<string> newMissing = new List<string>();
                 foreach (string mp in p.Dependencies.MissingDependencies)
                 {
                     bool missing = true;
-                    string assemblyFileName = Path.GetFileNameWithoutExtension(mp);                    
+                    string assemblyFileName = Path.GetFileNameWithoutExtension(mp);
                     if (sr.AssembliesMap.ContainsKey(assemblyFileName))
                     {
                         p.Dependencies.ImplicitProjectDependencies.Add(sr.AssembliesMap[assemblyFileName]);
