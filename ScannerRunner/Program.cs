@@ -12,10 +12,12 @@ namespace ScannerRunner
         static void Main(string[] args)
         {
             Scanner s = new Scanner(@"C:\Users\fox\Documents\visual studio 2013\Projects\show-me-the-wookie");
+            //Scanner s = new Scanner(@"c:\Users\fox\Documents\Visual Studio 2013\Projects\Glympse\");
+            
             s.ErrorEncountered += s_ErrorEncountered;
             s.SolutionScanned += s_SolutionScanned;
             s.SolutionEncountered += s_SolutionEncountered;
-            Console.WriteLine(s.ScanAndFindRoots());
+            Console.WriteLine(s.Scan());
         }
 
         static void s_SolutionEncountered(object sender, EventArgs e)

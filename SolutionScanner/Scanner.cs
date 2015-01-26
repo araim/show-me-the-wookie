@@ -17,7 +17,8 @@ namespace SolutionDependencyScanner
 
         private readonly DirectoryInfo scanRoot;
         private readonly ISolutionScanner scanner;
-        private readonly IProjectScanner ps;
+
+
 
 
         public Scanner(string path)
@@ -34,15 +35,57 @@ namespace SolutionDependencyScanner
             {
                 throw new ArgumentException("Invalid path specified", "path");
             }
-            ps = new ProjectScanner();
-            scanner = new SolutionScanner(ps);
+            scanner = new SolutionScanner();
+        }
+
+        public ScanResult Scan()
+        {
+            ScanResult scr = new ScanResult();
+            ISet<SolutionScaffold> set = ScanAndFindRoots();
+            scr.Scaffolds = set;
+            ResolveProjects(scr);
+            DetermineDependencies(scr);
+            return scr;
         }
 
 
-        public ISet<Solution> ScanAndFindRoots()
+        private void ResolveProjects(ScanResult sr)
+        {
+            ISet<Project> allProjects = new HashSet<Project>();
+            Dictionary<string, Project> assembliesMap = new Dictionary<string, Project>();
+
+            foreach (SolutionScaffold sln in sr.Scaffolds)
+            {
+                foreach (ProjectReference p in sln.Projects)
+                {
+                    IProjectScanner ps = new BuiltinProjectScanner.ProjectScanner(p.Path);
+                    Project pr = ps.ScanProject();
+                    allProjects.Add(pr);
+                    assembliesMap[pr.AssemblyName] = pr;
+                }
+            }
+            sr.Projects = allProjects;
+            sr.AssembliesMap = assembliesMap;
+
+        }
+
+        private void DetermineDependencies(ScanResult sr)
+        {
+            foreach (Project p in sr.Projects)
+            {
+                foreach (string mp in p.Dependencies.MissingDependencies)
+                {
+
+                }
+            }
+            return;
+        }
+
+
+        private ISet<SolutionScaffold> ScanAndFindRoots()
         {
             HashSet<string> visited = new HashSet<string>();
-            ISet<Solution> set = new HashSet<Solution>();
+            ISet<SolutionScaffold> set = new HashSet<SolutionScaffold>();
             Stack<DirectoryInfo> s = new Stack<DirectoryInfo>();
             s.Push(scanRoot);
 
@@ -53,17 +96,8 @@ namespace SolutionDependencyScanner
                 {
                     continue;
                 }
-                foreach (var f in di.EnumerateFiles("*.sln"))
-                {
-                    try
-                    {
-                        set.Add(scanSolution(f));
-                    }
-                    catch (Exception e)
-                    {
-                        SendErrorEvent(f, e);
-                    }
-                }
+
+                ScanDirectory(set, di);
                 foreach (var d in di.EnumerateDirectories())
                 {
                     if (!visited.Contains(d.FullName))
@@ -74,6 +108,22 @@ namespace SolutionDependencyScanner
             }
 
             return set;
+        }
+
+        private void ScanDirectory(ISet<SolutionScaffold> set, DirectoryInfo di)
+        {
+            foreach (var f in di.EnumerateFiles("*.sln"))
+            {
+                try
+                {
+                    SolutionScaffold sln = scanSolution(f);
+                    set.Add(sln);
+                }
+                catch (Exception e)
+                {
+                    SendErrorEvent(f, e);
+                }
+            }
         }
 
         private void SendErrorEvent(FileInfo f, Exception e)
@@ -107,7 +157,7 @@ namespace SolutionDependencyScanner
             }
         }
 
-        private void SendScanEvent(FileInfo f, Solution s)
+        private void SendScanEvent(FileInfo f, SolutionScaffold s)
         {
 
             foreach (var err in SolutionScanned.GetInvocationList())
@@ -123,10 +173,10 @@ namespace SolutionDependencyScanner
             }
         }
 
-        private Solution scanSolution(FileInfo f)
+        private SolutionScaffold scanSolution(FileInfo f)
         {
             SendSolutionEncountered(f);
-            Solution s = scanner.scan(f);
+            SolutionScaffold s = scanner.scan(f);
             SendScanEvent(f, s);
             return s;
         }

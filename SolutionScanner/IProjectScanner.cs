@@ -7,6 +7,8 @@ namespace SolutionDependencyScanner
 {
     internal interface IProjectScanner
     {
-        Project scanProject(string p);
+        Project ScanProject();
+
+       
     }
 }

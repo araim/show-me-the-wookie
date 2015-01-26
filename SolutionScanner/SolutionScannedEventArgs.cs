@@ -8,11 +8,11 @@ namespace SolutionDependencyScanner
 {
     public class SolutionScannedEventArgs:EventArgs
     {
-        public SolutionScannedEventArgs(Solution s)
+        public SolutionScannedEventArgs(SolutionScaffold s)
         {
             Solution = s;
         }
 
-        public Solution Solution { get; private set; }
+        public SolutionScaffold Solution { get; private set; }
     }
 }

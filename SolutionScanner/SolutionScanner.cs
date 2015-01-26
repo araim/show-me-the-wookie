@@ -11,20 +11,18 @@ namespace SolutionDependencyScanner
     {
         private const string ProjectRegexText = "^Project\\(\"{[A-Z0-9-]+}\"\\)\\s*=\\s*\"([^\"]+)\"\\s*,\\s*\"([^\"]+)\"\\s*,\\s*\"{([A-Z0-9-]+)}\"\\s*$";
         private readonly Regex ProjectRegex = new Regex(ProjectRegexText, RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
-        private readonly IProjectScanner ps;
-        public SolutionScanner(IProjectScanner ps)
+        public SolutionScanner()
         {
-            this.ps = ps;
+            
         }
 
-        public Solution scan(System.IO.FileInfo f)
+        public SolutionScaffold scan(System.IO.FileInfo f)
         {
-            Solution s = new Solution();
+            SolutionScaffold s = new SolutionScaffold();
             s.FullPath = f.FullName;
+            s.Name = Path.GetFileNameWithoutExtension(f.FullName);
             using (var stream = f.OpenText())
             {
-
-                //Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glympse", "Glympse\Glympse.csproj", "{08026ECD-191E-442E-BA5D-95D44D4A93FE}"   
                 while (!stream.EndOfStream)
                 {
                     string line = stream.ReadLine();

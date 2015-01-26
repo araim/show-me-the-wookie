@@ -2,23 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SolutionDependencyScanner
 {
     public class Solution
     {
+
+        public string Name { get; set; }
         public string FullPath { get; set; }
-        public IList<ProjectReference> Projects { get; private set; }
+        public IList<Project> Projects { get; private set; }
 
 
         internal Solution()
         {
-            Projects = new List<ProjectReference>();
+            Projects = new List<Project>();
         }
 
         public override string ToString()
         {
-            return "Solution { FullPath = " + FullPath + ", Projects = " + string.Join(",", Projects) + "}";
+            return "Solution { Name = " + Name + ", FullPath = " + FullPath + ", Projects = " + string.Join(",", Projects) + "}";
         }
     }
 }

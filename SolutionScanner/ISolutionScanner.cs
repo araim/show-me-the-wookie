@@ -9,7 +9,7 @@ namespace SolutionDependencyScanner
 {
     internal interface ISolutionScanner
     {
-        Solution scan(FileInfo f);
+        SolutionScaffold scan(FileInfo f);
 
     }
 }
