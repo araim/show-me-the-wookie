@@ -56,8 +56,20 @@ namespace SolutionDependencyScanner
                 Solution s = Solution.FromScaffold(sc);
                 foreach (ProjectReference pr in sc.Projects)
                 {
-                    s.Projects.Add(scr.Projects[pr.ID]);
+                    if (scr.Projects.ContainsKey(pr.ID))
+                    {
+                        s.Projects.Add(scr.Projects[pr.ID]);
+                    }
+                    else
+                    {
+                        Project p = new Project();
+                        p.ID = pr.ID;
+                        p.Path = pr.Path;
+                        p.AssemblyName = "Unknown from ReferenceName: " + pr.Name;
+                        s.Projects.Add(p);
+                    }
                 }
+                slns.Add(s);
             }
             scr.Solutions = slns;
         }
@@ -72,10 +84,17 @@ namespace SolutionDependencyScanner
             {
                 foreach (ProjectReference p in sln.Projects)
                 {
-                    IProjectScanner ps = new BuiltinProjectScanner.ProjectScanner(p.Path);
-                    Project pr = ps.ScanProject();
-                    allProjects.Add(pr.ID, pr);
-                    assembliesMap[pr.AssemblyName] = pr;
+                    try
+                    {
+                        IProjectScanner ps = new BuiltinProjectScanner.ProjectScanner(p.Path);
+                        Project pr = ps.ScanProject();
+                        allProjects.Add(pr.ID, pr);
+                        assembliesMap[pr.AssemblyName] = pr;
+                    }
+                    catch (Exception e)
+                    {
+                        SendErrorEvent(new FileInfo(p.Path), e);
+                    }
                 }
             }
             sr.Projects = allProjects;
@@ -163,47 +182,53 @@ namespace SolutionDependencyScanner
 
         private void SendErrorEvent(FileInfo f, Exception e)
         {
-
-            foreach (var err in ErrorEncountered.GetInvocationList())
+            if (ErrorEncountered != null)
             {
-                try
+                foreach (var err in ErrorEncountered.GetInvocationList())
                 {
-                    err.DynamicInvoke(f, new ScanErrorEventArgs(e));
-                }
-                catch (Exception)
-                {
-                    // can't do anything, ignore.
+                    try
+                    {
+                        err.DynamicInvoke(f, new ScanErrorEventArgs(e));
+                    }
+                    catch (Exception)
+                    {
+                        // can't do anything, ignore.
+                    }
                 }
             }
         }
         private void SendSolutionEncountered(FileInfo f)
         {
-
-            foreach (var err in SolutionEncountered.GetInvocationList())
+            if (SolutionEncountered != null)
             {
-                try
+                foreach (var err in SolutionEncountered.GetInvocationList())
                 {
-                    err.DynamicInvoke(f, new EventArgs());
-                }
-                catch (Exception)
-                {
-                    // can't do anything, ignore.
+                    try
+                    {
+                        err.DynamicInvoke(f, new EventArgs());
+                    }
+                    catch (Exception)
+                    {
+                        // can't do anything, ignore.
+                    }
                 }
             }
         }
 
         private void SendScanEvent(FileInfo f, SolutionScaffold s)
         {
-
-            foreach (var err in SolutionScanned.GetInvocationList())
+            if (SolutionScanned != null)
             {
-                try
+                foreach (var err in SolutionScanned.GetInvocationList())
                 {
-                    err.DynamicInvoke(f, new SolutionScannedEventArgs(s));
-                }
-                catch (Exception)
-                {
-                    // can't do anything, ignore.
+                    try
+                    {
+                        err.DynamicInvoke(f, new SolutionScannedEventArgs(s));
+                    }
+                    catch (Exception)
+                    {
+                        // can't do anything, ignore.
+                    }
                 }
             }
         }
