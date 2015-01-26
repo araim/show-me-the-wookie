@@ -19,8 +19,6 @@ namespace SolutionDependencyScanner
         private readonly ISolutionScanner scanner;
 
 
-
-
         public Scanner(string path)
         {
             try
@@ -73,10 +71,31 @@ namespace SolutionDependencyScanner
         {
             foreach (Project p in sr.Projects)
             {
+                IList<string> newMissing = new List<string>();
                 foreach (string mp in p.Dependencies.MissingDependencies)
                 {
-
+                    bool missing = true;
+                    string assemblyFileName = Path.GetFileNameWithoutExtension(mp);                    
+                    if (sr.AssembliesMap.ContainsKey(assemblyFileName))
+                    {
+                        p.Dependencies.ImplicitProjectDependencies.Add(sr.AssembliesMap[assemblyFileName]);
+                        missing = false;
+                    }
+                    else
+                    {
+                        FileInfo fi = new FileInfo(mp);
+                        if (fi.Exists)
+                        {
+                            p.Dependencies.HardcodedDependencies.Add(mp);
+                            missing = false;
+                        }
+                    }
+                    if (missing)
+                    {
+                        newMissing.Add(mp);
+                    }
                 }
+                p.Dependencies.MissingDependencies = newMissing;
             }
             return;
         }

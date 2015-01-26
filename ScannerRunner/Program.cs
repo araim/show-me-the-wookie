@@ -17,7 +17,11 @@ namespace ScannerRunner
             s.ErrorEncountered += s_ErrorEncountered;
             s.SolutionScanned += s_SolutionScanned;
             s.SolutionEncountered += s_SolutionEncountered;
-            Console.WriteLine(s.Scan());
+            var sr = s.Scan();
+            foreach(Project p in sr.Projects){
+                Console.WriteLine(p);
+            }
+            
         }
 
         static void s_SolutionEncountered(object sender, EventArgs e)
