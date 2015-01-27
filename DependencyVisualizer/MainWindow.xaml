@@ -24,12 +24,15 @@
         </TabItem>
         <TabItem Header="Graph">
             <Grid>
-                <zoom:ZoomControl>
-                    <graphsharp:GraphLayout x:Name="graphLayout"
+                <zoom:ZoomControl Name="zc">
+                    <graphsharp:GraphLayout x:Name="graphLayout" 
+                                            MouseDown="graphLayout_MouseDown"  
                                     Graph="{Binding ElementName=root,Path=GraphToVisualize}"
-                                    LayoutAlgorithmType="FR"
+                                            LayoutMode="Simple"
+                                    LayoutAlgorithmType="LinLog"
                                     OverlapRemovalAlgorithmType="FSA"
-                                    HighlightAlgorithmType="Simple" />
+                                            
+                                    HighlightAlgorithmType="Simple"/>
                 </zoom:ZoomControl>
             </Grid>
         </TabItem>

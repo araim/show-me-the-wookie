@@ -93,7 +93,7 @@ namespace SolutionDependencyScanner
                     }
                     catch (Exception e)
                     {
-                        SendErrorEvent(new FileInfo(p.Path), e);
+                        SendErrorEvent(p.Path, e);
                     }
                 }
             }
@@ -175,12 +175,12 @@ namespace SolutionDependencyScanner
                 }
                 catch (Exception e)
                 {
-                    SendErrorEvent(f, e);
+                    SendErrorEvent(f.FullName, e);
                 }
             }
         }
 
-        private void SendErrorEvent(FileInfo f, Exception e)
+        private void SendErrorEvent(string path, Exception e)
         {
             if (ErrorEncountered != null)
             {
@@ -188,7 +188,7 @@ namespace SolutionDependencyScanner
                 {
                     try
                     {
-                        err.DynamicInvoke(f, new ScanErrorEventArgs(e));
+                        err.DynamicInvoke(path, new ScanErrorEventArgs(e));
                     }
                     catch (Exception)
                     {
