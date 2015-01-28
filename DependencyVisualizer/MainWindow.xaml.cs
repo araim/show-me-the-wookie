@@ -26,9 +26,10 @@ namespace DependencyVisualizer
     public partial class MainWindow : Window
     {
 
-        private ObservableCollection<string> slns = new ObservableCollection<string>();
+        private ObservableCollection<SolutionSerializableToNameAndPath> slns = new ObservableCollection<SolutionSerializableToNameAndPath>();
         private IBidirectionalGraph<object, IEdge<object>> _graphToVisualize;
         private ScanResult sr;
+        
         public IBidirectionalGraph<object, IEdge<object>> GraphToVisualize
         {
             get { return _graphToVisualize; }
@@ -37,8 +38,6 @@ namespace DependencyVisualizer
         public MainWindow()
         {
             InitializeComponent();
-
-
             SolutionList.ItemsSource = slns;
         }
 
@@ -71,7 +70,7 @@ namespace DependencyVisualizer
 
             foreach (Solution sln in l)
             {
-                slns.Add(sln.Name);
+                slns.Add(new SolutionSerializableToNameAndPath(sln));
             }
 
         }
@@ -80,18 +79,9 @@ namespace DependencyVisualizer
         {
             var g = new BidirectionalGraph<object, IEdge<object>>();
 
+            SolutionSerializableToNameAndPath slnser = SolutionList.SelectedItem as SolutionSerializableToNameAndPath;
+            Solution sln = slnser.Solution;
 
-            string solution = SolutionList.SelectedItem.ToString();
-
-            Solution sln = null;
-            foreach (Solution s in sr.Solutions)
-            {
-                if (s.Name == solution)
-                {
-                    sln = s;
-                    break;
-                }
-            }
             ISet<string> displayedProjects = new HashSet<string>();
             Queue<Project> projectsToProcess = new Queue<Project>();
 
@@ -158,6 +148,11 @@ namespace DependencyVisualizer
         private void graphLayout_MouseDown(object sender, MouseButtonEventArgs e)
         {
             zc.AnimationLength = TimeSpan.Zero;
+        }
+
+        private void graphLayout_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //graphLayout.HighlightAlgorithm = 
         }
     }
 }

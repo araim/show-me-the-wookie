@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolutionDependencyScannerTe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DependencyVisualizer", "DependencyVisualizer\DependencyVisualizer.csproj", "{B243F349-1D23-4526-AA6B-ACDA25118822}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DependencyVisualizerGraphX", "DependencyVisualizerGraphX\DependencyVisualizerGraphX.csproj", "{B8B8842B-62B2-4EAC-89E8-92A69AC6B8BA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,16 @@ Global
 		{B243F349-1D23-4526-AA6B-ACDA25118822}.Release|ARM.ActiveCfg = Release|Any CPU
 		{B243F349-1D23-4526-AA6B-ACDA25118822}.Release|x64.ActiveCfg = Release|Any CPU
 		{B243F349-1D23-4526-AA6B-ACDA25118822}.Release|x86.ActiveCfg = Release|Any CPU
+		{B8B8842B-62B2-4EAC-89E8-92A69AC6B8BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8B8842B-62B2-4EAC-89E8-92A69AC6B8BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8B8842B-62B2-4EAC-89E8-92A69AC6B8BA}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{B8B8842B-62B2-4EAC-89E8-92A69AC6B8BA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B8B8842B-62B2-4EAC-89E8-92A69AC6B8BA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B8B8842B-62B2-4EAC-89E8-92A69AC6B8BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8B8842B-62B2-4EAC-89E8-92A69AC6B8BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8B8842B-62B2-4EAC-89E8-92A69AC6B8BA}.Release|ARM.ActiveCfg = Release|Any CPU
+		{B8B8842B-62B2-4EAC-89E8-92A69AC6B8BA}.Release|x64.ActiveCfg = Release|Any CPU
+		{B8B8842B-62B2-4EAC-89E8-92A69AC6B8BA}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

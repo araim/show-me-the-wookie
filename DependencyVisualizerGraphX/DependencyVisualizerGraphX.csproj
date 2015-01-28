@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B243F349-1D23-4526-AA6B-ACDA25118822}</ProjectGuid>
+    <ProjectGuid>{B8B8842B-62B2-4EAC-89E8-92A69AC6B8BA}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DependencyVisualizer</RootNamespace>
-    <AssemblyName>DependencyVisualizer</AssemblyName>
+    <RootNamespace>DependencyVisualizerGraphX</RootNamespace>
+    <AssemblyName>DependencyVisualizerGraphX</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -35,11 +35,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GraphSharp">
-      <HintPath>..\packages\GraphSharp.1.1.0.0\lib\net40\GraphSharp.dll</HintPath>
+    <Reference Include="GraphX.PCL.Common">
+      <HintPath>..\packages\GraphX.2.1.7\lib\net40-client\GraphX.PCL.Common.dll</HintPath>
     </Reference>
-    <Reference Include="GraphSharp.Controls">
-      <HintPath>..\packages\GraphSharp.1.1.0.0\lib\net40\GraphSharp.Controls.dll</HintPath>
+    <Reference Include="GraphX.PCL.Logic">
+      <HintPath>..\packages\GraphX.2.1.7\lib\net40-client\GraphX.PCL.Logic.dll</HintPath>
+    </Reference>
+    <Reference Include="GraphX.WPF.Controls">
+      <HintPath>..\packages\GraphX.2.1.7\lib\net40-client\GraphX.WPF.Controls.dll</HintPath>
     </Reference>
     <Reference Include="QuickGraph">
       <HintPath>..\packages\QuickGraph.3.6.61119.7\lib\net4\QuickGraph.dll</HintPath>
@@ -67,16 +70,18 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="WPFExtensions">
-      <HintPath>..\packages\WPFExtensions.1.0.0\lib\WPFExtensions.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ReferenceHighlitingAlgorithm.cs" />
+    <Compile Include="DependencyEdge.cs" />
+    <Compile Include="DependencyGraph.cs" />
+    <Compile Include="DependencyGraphArea.cs" />
+    <Compile Include="DependencyGraphLogicCore.cs" />
+    <Compile Include="DependencyVertex.cs" />
+    <Compile Include="HighlightSpreadAnimation.cs" />
     <Compile Include="SolutionSerializableToNameAndPath.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
