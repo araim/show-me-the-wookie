@@ -5,35 +5,14 @@
              xmlns:gxl="clr-namespace:GraphX;assembly=GraphX.WPF.Controls"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-<!--
-        <LinearGradientBrush x:Key="NormalBrush" EndPoint="0.5,1" StartPoint="0.5,0" po:Freeze="true">
-            <GradientStop Color="#FFFFFFFF" Offset="0"/>
-            <GradientStop Color="#FFA4ADBB" Offset="0.521"/>
-            <GradientStop Color="#FFD7E0EA" Offset="0.194"/>
-            <GradientStop Color="#FFBAC1CF" Offset="0.811"/>
-            <GradientStop Color="#FFBCC5D5" Offset="0.507"/>
-            <GradientStop Color="#FFE3E4E6" Offset="1"/>
-        </LinearGradientBrush>
-        <LinearGradientBrush x:Key="NormalBorderBrush" EndPoint="0.5,0" StartPoint="0.5,1" po:Freeze="true">
-            <GradientStop Color="#FF8B8B8B"/>
-            <GradientStop Color="#FFADADAD" Offset="1"/>
-        </LinearGradientBrush>
 
-        <LinearGradientBrush x:Key="EdgeBrush" EndPoint="0.5,0" StartPoint="0.5,1" po:Freeze="true">
-            <GradientStop Color="#FF000000"/>
-            <GradientStop Color="#FFBF931E" Offset="1"/>
-        </LinearGradientBrush>
-
-        <SolidColorBrush x:Key="EdgeArrowBrush" Color="Black" po:Freeze="true" />
-
-        
         <Style TargetType="{x:Type gxl:VertexControl}">
             
             <Setter Property="Background" Value="#FFE3E3E3"/>
             <Setter Property="BorderThickness" Value="5,3,5,3"/>
             <Setter Property="Padding" Value="10,5,10,5"/>
             <Setter Property="BorderBrush" Value="#FF393939"/>
-
+<!--
             
             <Setter Property="Template">
                 <Setter.Value>
@@ -100,7 +79,7 @@
                 <Trigger Property="gxl:HighlightBehaviour.Highlighted" Value="False ">
                     <Setter Property="Background" Value="#FFE3E3E3"/>
                 </Trigger>
-            </Style.Triggers>
+            </Style.Triggers>-->
         </Style>
 
         
@@ -153,6 +132,6 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        -->
+       
     </Application.Resources>
 </Application>

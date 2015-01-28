@@ -18,7 +18,7 @@ namespace DependencyVisualizerGraphX
         where TGraph : GraphArea<TVertex, TEdge, BidirectionalGraph<TVertex, TEdge>>
     {
         private TGraph graph;
-        private double duration = 1d;
+        private int duration = 500;
 
         public HighlightSpreadAnimation(TGraph g)
         {
@@ -27,6 +27,7 @@ namespace DependencyVisualizerGraphX
 
         public void AnimateEdge(GraphX.EdgeControl target)
         {
+            
             var story = new Storyboard();
             var animation = new DoubleAnimation(1, 0, new Duration(TimeSpan.FromSeconds(1)), FillBehavior.Stop);
             animation.Completed += (sender, e) => { OnCompleted(target); };
@@ -41,7 +42,7 @@ namespace DependencyVisualizerGraphX
         {
             TEdge e = (TEdge)target.Edge;
             TVertex v = e.Target;
-
+            
             foreach (var oe in graph.EdgesList.Keys)
             {
                 if (oe.Source == v)
@@ -64,17 +65,7 @@ namespace DependencyVisualizerGraphX
 
         public event GraphX.Models.RemoveControlEventHandler Completed;
 
-        public double Duration
-        {
-            get
-            {
-                return duration;
-            }
-            set
-            {
-                duration = value;
-            }
-        }
+      
         private void AnimateSecond(EdgeControl edge, Color c1, Color c2, int duration)
         {
             var story = new Storyboard();
@@ -96,7 +87,7 @@ namespace DependencyVisualizerGraphX
                 {
                     if (oe.Source == v.Vertex)
                     {
-                        AnimateEdge(graph.EdgesList[oe]);
+                        AnimateEdgeForward(graph.EdgesList[oe]);
                     }
                 }
             
@@ -133,12 +124,12 @@ namespace DependencyVisualizerGraphX
         }
         public void AnimateEdgeBackward(EdgeControl target)
         {
-            AnimateFirst(target, Color.FromRgb(99, 0, 0), Color.FromRgb(66, 0, 0), Color.FromRgb(00, 0, 0), 300, 700);
+            AnimateFirst(target, Color.FromRgb(99, 0, 0), Color.FromRgb(66, 0, 0), Color.FromRgb(0, 0, 0), duration / 3, duration - duration / 3);
         }
 
         public void AnimateEdgeForward(EdgeControl target)
         {
-            AnimateFirst(target, Color.FromRgb(0, 0, 0), Color.FromRgb(33, 0, 0), Color.FromRgb(99, 0, 0), 300, 700);
+            AnimateFirst(target, Color.FromRgb(0, 0, 0), Color.FromRgb(33, 0, 0), Color.FromRgb(99, 0, 0), duration/3, duration-duration/3);
         }
 
         void animation_Changed(object sender, EventArgs e)
@@ -148,7 +139,7 @@ namespace DependencyVisualizerGraphX
 
         public void AnimateVertexBackward(VertexControl target)
         {
-            AnimateFirst(target, Color.FromRgb(99, 0, 0), Color.FromRgb(66, 0, 0), Color.FromRgb(00, 0, 0), 300, 700);
+            AnimateFirst(target, Color.FromRgb(99, 0, 0), Color.FromRgb(66, 0, 0), Color.FromRgb(0, 0, 0), duration / 3, duration - duration / 3);
             foreach (var oe in graph.EdgesList.Keys)
             {
                 if (oe.Source == target.Vertex)
@@ -160,13 +151,26 @@ namespace DependencyVisualizerGraphX
 
         public void AnimateVertexForward(VertexControl target)
         {
-            AnimateFirst(target, Color.FromRgb(0, 0, 0), Color.FromRgb(33, 0, 0), Color.FromRgb(99, 0, 0), 300, 700);
+            AnimateFirst(target, Color.FromRgb(0, 0, 0), Color.FromRgb(33, 0, 0), Color.FromRgb(99, 0, 0), duration / 3, duration - duration / 3);
             foreach (var oe in graph.EdgesList.Keys)
             {
                 if (oe.Source == target.Vertex)
                 {
                     AnimateEdgeForward(graph.EdgesList[oe]);
                 }
+            }
+        }
+
+
+        double IBidirectionalControlAnimation.Duration
+        {
+            get
+            {
+                return ((double)duration) / 1000;
+            }
+            set
+            {
+                duration = (int)(value * 1000);
             }
         }
     }
