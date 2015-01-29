@@ -76,6 +76,8 @@ namespace DependencyVisualizer
             }
 
           scanBtn.IsEnabled = true;
+          plotBtn.IsEnabled = true;
+          SolutionList.IsEnabled = true;
         }
 
         private void plotBtn_Click(object sender, RoutedEventArgs e)
