@@ -53,12 +53,14 @@ namespace DependencyVisualizer
             if (result == System.Windows.Forms.DialogResult.OK)
             {
                 RootPath.Text = dlg.SelectedPath;
+              scanBtn.IsEnabled = true;
             }
-
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void scanBtn_Click(object sender, RoutedEventArgs e)
         {
+          scanBtn.IsEnabled = false;
+
             string path = RootPath.Text;
             SolutionDependencyScanner.Scanner s = new SolutionDependencyScanner.Scanner(path);
             sr = s.Scan();
@@ -73,9 +75,10 @@ namespace DependencyVisualizer
                 slns.Add(new SolutionSerializableToNameAndPath(sln));
             }
 
+          scanBtn.IsEnabled = true;
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void plotBtn_Click(object sender, RoutedEventArgs e)
         {
             var g = new BidirectionalGraph<object, IEdge<object>>();
 
@@ -154,5 +157,8 @@ namespace DependencyVisualizer
         {
             //graphLayout.HighlightAlgorithm = 
         }
+
+       
+        
     }
 }
