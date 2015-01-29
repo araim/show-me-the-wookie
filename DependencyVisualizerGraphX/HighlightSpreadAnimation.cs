@@ -18,54 +18,26 @@ namespace DependencyVisualizerGraphX
         where TGraph : GraphArea<TVertex, TEdge, BidirectionalGraph<TVertex, TEdge>>
     {
         private TGraph graph;
-        private int duration = 500;
+        private int duration = 1000;
 
-        public HighlightSpreadAnimation(TGraph g)
+
+        private Color c1;
+        private Color c2;
+        private Color c3;
+        private bool fwd;
+
+        public HighlightSpreadAnimation(TGraph g, Color start, Color mid, Color end,bool forward = true)
         {
             graph = g;
-        }
-
-        public void AnimateEdge(GraphX.EdgeControl target)
-        {
-            
-            var story = new Storyboard();
-            var animation = new DoubleAnimation(1, 0, new Duration(TimeSpan.FromSeconds(1)), FillBehavior.Stop);
-            animation.Completed += (sender, e) => { OnCompleted(target); };
-            story.Children.Add(animation);
-            Storyboard.SetTarget(animation, target as FrameworkElement);
-            Storyboard.SetTargetProperty(animation, new PropertyPath(UIElement.OpacityProperty));
-            story.Begin(target as FrameworkElement);
-
-        }
-
-        private void OnCompleted(GraphX.EdgeControl target)
-        {
-            TEdge e = (TEdge)target.Edge;
-            TVertex v = e.Target;
-            
-            foreach (var oe in graph.EdgesList.Keys)
-            {
-                if (oe.Source == v)
-                {
-                    AnimateEdge(graph.EdgesList[oe]);
-                }
-            }
-        }
-
-        public void AnimateVertex(GraphX.VertexControl target)
-        {
-            foreach (var oe in graph.EdgesList.Keys)
-            {
-                if (oe.Source == target.Vertex)
-                {
-                    AnimateEdge(graph.EdgesList[oe]);
-                }
-            }
+            c1 = start;
+            c2 = mid;
+            c3 = end;
+            fwd = forward;
         }
 
         public event GraphX.Models.RemoveControlEventHandler Completed;
 
-      
+
         private void AnimateSecond(EdgeControl edge, Color c1, Color c2, int duration)
         {
             var story = new Storyboard();
@@ -76,21 +48,22 @@ namespace DependencyVisualizerGraphX
             story.Begin(edge as FrameworkElement);
         }
 
-        private void AnimateFirst(EdgeControl edge,Color c1,Color c2,Color c3,int duration,int duration2)
+        private void AnimateFirst(EdgeControl edge, Color c1, Color c2, Color c3, int duration, int duration2)
         {
             var story = new Storyboard();
-            var anim = new ColorAnimation(c1,c2,new Duration(TimeSpan.FromMilliseconds(duration)),FillBehavior.HoldEnd);
-            anim.Completed += (sender, e) => { 
-                AnimateSecond(edge,c2,c3, duration2);
-                VertexControl v = edge.Target;
+            var anim = new ColorAnimation(c1, c2, new Duration(TimeSpan.FromMilliseconds(duration)), FillBehavior.HoldEnd);
+            anim.Completed += (sender, e) =>
+            {
+                AnimateSecond(edge, c2, c3, duration2);
+                VertexControl v = fwd?edge.Target:edge.Source;
                 foreach (var oe in graph.EdgesList.Keys)
                 {
-                    if (oe.Source == v.Vertex)
+                   if ((fwd && oe.Source == v.Vertex) || (!fwd && oe.Target == v.Vertex))
                     {
                         AnimateEdgeForward(graph.EdgesList[oe]);
                     }
                 }
-            
+
             };
             story.Children.Add(anim);
             Storyboard.SetTarget(anim, edge as FrameworkElement);
@@ -114,7 +87,7 @@ namespace DependencyVisualizerGraphX
             var anim = new ColorAnimation(c1, c2, new Duration(TimeSpan.FromMilliseconds(duration)), FillBehavior.HoldEnd);
             anim.Completed += (sender, e) =>
             {
-                AnimateSecond(v, c2, c3, duration2);               
+                AnimateSecond(v, c2, c3, duration2);
 
             };
             story.Children.Add(anim);
@@ -124,12 +97,12 @@ namespace DependencyVisualizerGraphX
         }
         public void AnimateEdgeBackward(EdgeControl target)
         {
-            AnimateFirst(target, Color.FromRgb(99, 0, 0), Color.FromRgb(66, 0, 0), Color.FromRgb(0, 0, 0), duration / 3, duration - duration / 3);
+            AnimateFirst(target, c3, c2, c1, duration / 3, duration - duration / 3);
         }
 
         public void AnimateEdgeForward(EdgeControl target)
         {
-            AnimateFirst(target, Color.FromRgb(0, 0, 0), Color.FromRgb(33, 0, 0), Color.FromRgb(99, 0, 0), duration/3, duration-duration/3);
+            AnimateFirst(target, c1, c2, c3, duration / 3, duration - duration / 3);
         }
 
         void animation_Changed(object sender, EventArgs e)
@@ -139,10 +112,10 @@ namespace DependencyVisualizerGraphX
 
         public void AnimateVertexBackward(VertexControl target)
         {
-            AnimateFirst(target, Color.FromRgb(99, 0, 0), Color.FromRgb(66, 0, 0), Color.FromRgb(0, 0, 0), duration / 3, duration - duration / 3);
+            AnimateFirst(target, c3, c2, c1, duration / 3, duration - duration / 3);
             foreach (var oe in graph.EdgesList.Keys)
             {
-                if (oe.Source == target.Vertex)
+                if ((fwd && oe.Source == target.Vertex) || (!fwd && oe.Target == target.Vertex))
                 {
                     AnimateEdgeBackward(graph.EdgesList[oe]);
                 }
@@ -151,10 +124,10 @@ namespace DependencyVisualizerGraphX
 
         public void AnimateVertexForward(VertexControl target)
         {
-            AnimateFirst(target, Color.FromRgb(0, 0, 0), Color.FromRgb(33, 0, 0), Color.FromRgb(99, 0, 0), duration / 3, duration - duration / 3);
+            AnimateFirst(target, c1, c2, c3, duration / 3, duration - duration / 3);
             foreach (var oe in graph.EdgesList.Keys)
             {
-                if (oe.Source == target.Vertex)
+                if ((fwd && oe.Source == target.Vertex) || (!fwd && oe.Target == target.Vertex))
                 {
                     AnimateEdgeForward(graph.EdgesList[oe]);
                 }

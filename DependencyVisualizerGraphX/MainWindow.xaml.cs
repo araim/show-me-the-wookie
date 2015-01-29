@@ -34,7 +34,13 @@ namespace DependencyVisualizerGraphX
 
         private ScanResult sr;
 
+        private Color c1 = Color.FromRgb(0x33, 0x33, 0x33);
+        private Color c2 = Color.FromRgb(0x66, 0x22, 0x22);
+        private Color c3 = Color.FromRgb(0x99, 0x11, 0x11);
 
+        private Color c4 = Color.FromRgb(0x33, 0x33, 0x33);
+        private Color c5 = Color.FromRgb(0x22, 0x22, 0x66);
+        private Color c6 = Color.FromRgb(0x11, 0x11, 0x99);
 
         public MainWindow()
         {
@@ -43,6 +49,7 @@ namespace DependencyVisualizerGraphX
             GraphArea_Setup();
             SolutionList.ItemsSource = slns;
             Loaded += MainWindow_Loaded;
+            Area.VertexDoubleClick += Area_VertexDoubleClick;
         }
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -238,10 +245,11 @@ namespace DependencyVisualizerGraphX
             Area.GetLogicCore<DependencyGraphLogicCore>().DefaultOverlapRemovalAlgorithmParams.VerticalGap = 50;
 
 
-            Area.MouseOverAnimation = new HighlightSpreadAnimation<DependencyEdge, DependencyVertex, DependencyGraphArea>(Area);
-            
+            //Area.MouseOverAnimation = new HighlightSpreadAnimation<DependencyEdge, DependencyVertex, DependencyGraphArea>(Area);
+
 
             Area.GenerateGraph(graph, true);
+            ClearHighlight();
             Area.SetVerticesDrag(true, true);
             zoomctrl.ZoomToFill();
             //Area.GenerateGraph(graph,true);
@@ -250,6 +258,28 @@ namespace DependencyVisualizerGraphX
             Area.RelayoutGraph(true);
             Area.SetVerticesDrag(true);*/
             ///zoomctrl.Mode = ZoomControlModes.Custom;
+        }
+
+        void Area_VertexDoubleClick(object sender, VertexSelectedEventArgs args)
+        {
+            ClearHighlight();
+
+            new HighlightSpreadAnimation<DependencyEdge, DependencyVertex, DependencyGraphArea>(Area, c1, c2, c3).AnimateVertexForward(args.VertexControl);
+            new HighlightSpreadAnimation<DependencyEdge, DependencyVertex, DependencyGraphArea>(Area, c4, c5, c6,false).AnimateVertexForward(args.VertexControl);
+
+        }
+
+        private void ClearHighlight()
+        {
+            
+            foreach (VertexControl vc in Area.GetAllVertexControls())
+            {
+                vc.Foreground = new SolidColorBrush(c1);;
+            }
+            foreach (EdgeControl ec in Area.EdgesList.Values)
+            {
+                ec.Foreground = new SolidColorBrush(c1);;
+            }
         }
 
         private void graphLayout_MouseDown(object sender, MouseButtonEventArgs e)

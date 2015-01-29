@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DependencyVisualizerGraphX
 {
-    internal class SolutionSerializableToNameAndPath
+    internal class SolutionSerializableToNameAndPath : IComparable<SolutionSerializableToNameAndPath>
     {
         public Solution Solution { get; private set; }
 
@@ -17,7 +17,17 @@ namespace DependencyVisualizerGraphX
         }
         public override string ToString()
         {
-            return Solution.Name + "[" + Solution.FullPath + "]";
+            return Solution.Name + "(" + Solution.Projects.Count + ") [" + Solution.FullPath + "]";
+        }
+
+        public int CompareTo(SolutionSerializableToNameAndPath other)
+        {
+            int cmp = Solution.Projects.Count - other.Solution.Projects.Count;
+            if (cmp == 0)
+            {
+                cmp = Solution.Name.CompareTo(other.Solution.Name);
+            }
+            return cmp;
         }
     }
 }
