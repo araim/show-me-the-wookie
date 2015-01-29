@@ -4,35 +4,35 @@
         xmlns:graphxctrl="clr-namespace:GraphX.Controls;assembly=GraphX.WPF.Controls"
         xmlns:gx="clr-namespace:GraphX;assembly=GraphX.WPF.Controls"
         xmlns:local="clr-namespace:DependencyVisualizerGraphX"  
-        Title="MainWindow" Height="450" Width="925">
-    <TabControl > 
-        
-        <TabItem Header="Settings" >
-            <DockPanel>
-                <StackPanel Orientation="Horizontal" Height="20" DockPanel.Dock="Top" >
-                    <TextBox Width="300" Name="RootPath"></TextBox>
-                    <Button Margin="0"  Padding="5,0,5,0" DockPanel.Dock="Right" Width="Auto" Click="BrowseFolder">...</Button>
-                    <TextBlock Width="100" Margin="10,0,10,0">Path</TextBlock>
-                </StackPanel>
-                <StackPanel>
-                </StackPanel>
-                <Button Content="Scan" Margin ="20,20,20,20" Height="30" Width="150" DockPanel.Dock ="Top" Click="Button_Click"/>
-                <StackPanel>
-                    <ComboBox Name ="SolutionList" ItemsSource ="{Binding ElementName=root,Path=Solutions}" />
-                </StackPanel>
-                <Button Content="Plot" Margin ="20,20,20,20" Height="30" Width="150" DockPanel.Dock ="Top" Click="Button_Click_1"/>
-            </DockPanel>
+        Title="Show me the Wookie" Height="450" Width="925">
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <Expander Grid.Row="0" Header="Settings" IsExpanded="True" Margin="5,5,0,0">
+      <Grid Background="#FFF7F7F7" HorizontalAlignment="Left" VerticalAlignment="Top" Width="596" Height="100">
+        <TextBox Name="RootPath" Height="23" Margin="51,10,144,67"/>
+        <Button Margin="457,10,0,0"  Padding="5,0,5,0" DockPanel.Dock="Right" Width="37" Click="BrowseFolder" HorizontalAlignment="Left" VerticalAlignment="Top" Height="23">...</Button>
 
 
-        </TabItem>
-        
-        <TabItem Header="Graph" Name="GraphTab" >
-            <Grid>
-                <graphxctrl:ZoomControl x:Name="zoomctrl" >
-                    <local:DependencyGraphArea x:Name="Area" />
-                </graphxctrl:ZoomControl>
-            </Grid>
-           
-        </TabItem>
-    </TabControl>
+        <Button x:Name="scanBtn" Content="Scan" Margin ="499,10,10,67" Height="23" DockPanel.Dock ="Top" Click="scanBtn_Click" IsEnabled="False"/>
+        <ComboBox Name ="SolutionList" ItemsSource ="{Binding ElementName=root,Path=Solutions}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="442" Height="25" Margin="10,56,0,0" IsEnabled="False" />
+        <Button x:Name="plotBtn" Content="Plot" Margin ="457,56,10,19" Height="25" DockPanel.Dock ="Top" Click="plotBtn_Click" IsEnabled="False"/>
+        <Label Content="Path:" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top" Height="23"/>
+      </Grid>
+    </Expander>
+
+    <GroupBox Grid.Row="1" Header="Graph" Margin="5,0,5,5">
+      <Grid>
+        <graphxctrl:ZoomControl x:Name="zoomctrl" >
+          <local:DependencyGraphArea x:Name="Area" />
+        </graphxctrl:ZoomControl>
+      </Grid>
+
+    </GroupBox>
+    
+  </Grid>
+  
 </Window>

@@ -137,8 +137,9 @@ namespace DependencyVisualizerGraphX
 
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void scanBtn_Click(object sender, RoutedEventArgs e)
         {
+          scanBtn.IsEnabled = false;
             string path = RootPath.Text;
             SolutionDependencyScanner.Scanner s = new SolutionDependencyScanner.Scanner(path);
             sr = s.Scan();
@@ -153,9 +154,12 @@ namespace DependencyVisualizerGraphX
                 slns.Add(new SolutionSerializableToNameAndPath(sln));
             }
 
+          scanBtn.IsEnabled = true;
+          plotBtn.IsEnabled = true;
+          SolutionList.IsEnabled = true;
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void plotBtn_Click(object sender, RoutedEventArgs e)
         {
             //var g = new BidirectionalGraph<object, IEdge<object>>();
 
@@ -228,9 +232,7 @@ namespace DependencyVisualizerGraphX
                     }
                 }
             }
-
-            GraphTab.IsSelected = true;
-
+          
             Area.GetLogicCore<DependencyGraphLogicCore>().DefaultEdgeRoutingAlgorithm = EdgeRoutingAlgorithmTypeEnum.SimpleER;
             var srp = (SimpleERParameters)Area.GetLogicCore<DependencyGraphLogicCore>().AlgorithmFactory.CreateEdgeRoutingParameters(EdgeRoutingAlgorithmTypeEnum.SimpleER);
 
