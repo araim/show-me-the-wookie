@@ -133,8 +133,9 @@ namespace DependencyVisualizerGraphX
             if (result == System.Windows.Forms.DialogResult.OK)
             {
                 RootPath.Text = dlg.SelectedPath;
+              scanBtn.IsEnabled = true;
             }
-
+          
         }
 
         private void scanBtn_Click(object sender, RoutedEventArgs e)
