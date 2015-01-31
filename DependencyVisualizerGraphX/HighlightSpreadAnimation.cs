@@ -35,7 +35,6 @@ namespace DependencyVisualizerGraphX
             fwd = forward;
         }
 
-        public event GraphX.Models.RemoveControlEventHandler Completed;
 
 
         private void AnimateSecond(EdgeControl edge, Color c1, Color c2, int duration)

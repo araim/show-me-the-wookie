@@ -41,5 +41,16 @@ namespace SolutionDependencyScanner
             remains.Reverse();
             return string.Join(Path.DirectorySeparatorChar + "", remains);
         }
+
+
+        public static string GetAbsolutePath(string referencePath, string path)
+        {
+            if (!Path.IsPathRooted(path))
+            {
+                path = Path.Combine(Path.GetDirectoryName(referencePath), path);
+                path = PathExtensions.Normalize(path);
+            }
+            return path;
+        }
     }
 }

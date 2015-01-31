@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace SolutionDependencyScanner
+namespace SolutionDependencyScanner.Events
 {
     public class ScanErrorEventArgs : EventArgs
     {

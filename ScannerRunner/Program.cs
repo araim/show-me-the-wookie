@@ -31,7 +31,7 @@ namespace ScannerRunner
 
         static void s_SolutionScanned(object sender, EventArgs e)
         {
-            SolutionScannedEventArgs se = e as SolutionScannedEventArgs;
+            SolutionDependencyScanner.Events.SolutionScannedEventArgs se = e as SolutionDependencyScanner.Events.SolutionScannedEventArgs;
             Console.WriteLine("[{0}] {1}: {2}", "SCAN", sender, se.Solution);
         }
 

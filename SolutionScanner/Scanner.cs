@@ -65,7 +65,8 @@ namespace SolutionDependencyScanner
                         Project p = new Project();
                         p.ID = pr.ID;
                         p.Path = pr.Path;
-                        p.AssemblyName = "Unknown from ReferenceName: " + pr.Name;
+                        p.IsMissing = true;
+                        p.AssemblyName = "Missing from ReferenceName: " + pr.Name;
                         s.Projects.Add(p);
                     }
                 }
@@ -86,8 +87,9 @@ namespace SolutionDependencyScanner
                 {
                     try
                     {
-                        IProjectScanner ps = new BuiltinProjectScanner.ProjectScanner(p.Path);
+                        IProjectScanner ps = new BuiltinProjectScanner.MultiVersionProjectScanner(p.Path);
                         Project pr = ps.ScanProject();
+                        SupplementProjectScanWithSolutionInfo(pr, p, sln);
                         allProjects.Add(pr.ID, pr);
                         assembliesMap[pr.AssemblyName] = pr;
                     }
@@ -100,6 +102,23 @@ namespace SolutionDependencyScanner
             sr.Projects = allProjects;
             sr.AssembliesMap = assembliesMap;
 
+        }
+
+        private void SupplementProjectScanWithSolutionInfo(Project p, ProjectReference pr, SolutionScaffold sln)
+        {
+
+            p.Name = pr.Name;
+            if (p.ID == null)
+            {
+                p.ID = pr.ID;
+            }
+            foreach (ProjectReference p_ref in p.Dependencies.ReferencedProjectDependencies)
+            {
+                if (p_ref.Path == null)
+                {
+                    p_ref.Path = PathExtensions.GetAbsolutePath(Path.GetDirectoryName(sln.FullPath), sln.Projects.First((sp => sp.Name == p_ref.Name)).Path);
+                }
+            }
         }
 
         private void DetermineDependencies(ScanResult sr)
@@ -188,7 +207,7 @@ namespace SolutionDependencyScanner
                 {
                     try
                     {
-                        err.DynamicInvoke(path, new ScanErrorEventArgs(e));
+                        err.DynamicInvoke(path, new Events.ScanErrorEventArgs(e));
                     }
                     catch (Exception)
                     {
@@ -223,7 +242,7 @@ namespace SolutionDependencyScanner
                 {
                     try
                     {
-                        err.DynamicInvoke(f, new SolutionScannedEventArgs(s));
+                        err.DynamicInvoke(f, new Events.SolutionScannedEventArgs(s));
                     }
                     catch (Exception)
                     {

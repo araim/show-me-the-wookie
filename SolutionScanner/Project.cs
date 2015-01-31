@@ -19,11 +19,15 @@ namespace SolutionDependencyScanner
 
         public string AssemblyName { get; internal set; }
 
+        public bool IsMissing { get; internal set; }
+
+        public string Name { get; internal set; }
+
         public ProjectDependencies Dependencies { get; internal set; }
 
         public override string ToString()
         {
-            return "Project { ID = " + ID + ",Path = " + Path + ", AssemblyName = " + AssemblyName + ", Dependencies = [" + Dependencies + "]}";
+            return "Project { ID = " + ID + ",Name = " + Name + ",Path = " + Path + ", AssemblyName = " + AssemblyName + ", Dependencies = [" + Dependencies + "]}";
         }
 
         public override bool Equals(object obj)

@@ -9,29 +9,26 @@ using System.Xml.XPath;
 namespace SolutionDependencyScanner.BuiltinProjectScanner
 {
 
-    internal class ProjectScanner : IProjectScanner
+    internal class ModernVSProjectScanner : AbstractProjectScanner
     {
-        private const string ProjectReferenceXPath = "/ns:Project/ns:ItemGroup/ns:ProjectReference";
-        private const string DllReferenceXPath = "/ns:Project/ns:ItemGroup/ns:Reference/ns:HintPath";
-        private const string AssemblyNameXPath = "/ns:Project/ns:PropertyGroup/ns:AssemblyName";
-        private const string ProjectGUIDXPath = "/ns:Project/ns:PropertyGroup/ns:ProjectGuid";
+        private const string ProjectReferenceXPath = "/msbuild2003:Project/msbuild2003:ItemGroup/msbuild2003:ProjectReference";
+        private const string DllReferenceXPath = "/msbuild2003:Project/msbuild2003:ItemGroup/msbuild2003:Reference/msbuild2003:HintPath";
+        private const string AssemblyNameXPath = "/msbuild2003:Project/msbuild2003:PropertyGroup/msbuild2003:AssemblyName";
+        private const string ProjectGUIDXPath = "/msbuild2003:Project/msbuild2003:PropertyGroup/msbuild2003:ProjectGuid";
         private const string MSBuildNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
 
-        private readonly XmlDocument xml;
         private readonly XmlNamespaceManager mgr;
         private Project proj;
-        private string path;
 
-        public ProjectScanner(string projectPath)
+        public ModernVSProjectScanner(XmlDocument xml, string path, string projectID = null)
+            : base(xml, path)
         {
-            path = projectPath;
-            xml = new XmlDocument();
-            xml.Load(projectPath);
             mgr = new XmlNamespaceManager(xml.NameTable);
-            mgr.AddNamespace("ns", MSBuildNamespace);
+            mgr.AddNamespace("msbuild2003", MSBuildNamespace);
         }
 
-        public Project ScanProject()
+
+        public override Project ScanProject()
         {
             proj = new Project();
             proj.Path = path;
@@ -66,9 +63,8 @@ namespace SolutionDependencyScanner.BuiltinProjectScanner
         private void GetReferencedDll(XmlNode node)
         {
             string dllPath = node.InnerText;
-            string dllFullPath = Path.Combine(Path.GetDirectoryName(path), dllPath);
-            dllFullPath = PathExtensions.Normalize(dllFullPath);
-            proj.Dependencies.MissingDependencies.Add(dllFullPath);
+            dllPath = PathExtensions.GetAbsolutePath(path,dllPath);
+            proj.Dependencies.MissingDependencies.Add(dllPath);
         }
 
 
