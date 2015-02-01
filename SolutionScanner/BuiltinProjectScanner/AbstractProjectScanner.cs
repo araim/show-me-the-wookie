@@ -8,7 +8,7 @@ using System.Xml;
 
 namespace SolutionDependencyScanner.BuiltinProjectScanner
 {
-    public abstract class AbstractProjectScanner : IProjectScanner
+    internal abstract class AbstractProjectScanner : IProjectScanner
     {
         protected readonly XmlDocument xml;
         protected string path;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SolutionDependencyScanner
 {
-    public class Project
+    public sealed class Project
     {
 
         public Project()

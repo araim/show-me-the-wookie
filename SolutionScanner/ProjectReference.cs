@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SolutionDependencyScanner
 {
-    public class ProjectReference
+    public sealed class ProjectReference
     {
         public string ID { get; set; }
 

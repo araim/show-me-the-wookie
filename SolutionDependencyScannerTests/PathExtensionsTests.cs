@@ -66,5 +66,24 @@ namespace SolutionDependencyScannerTests
             Assert.AreEqual(expected, result);
         }
 
+
+        [TestMethod]
+        public void TestAbsolutePathFromAbsoluteAndRelative()
+        {
+            string path = "c:/folder1\\folder2\\";
+            string path2 = "..\\file.txt";
+            string expected = "c:\\folder1\\file.txt";
+            string result = PathExtensions.GetAbsolutePath(path, path2);
+            Assert.AreEqual(expected, result);
+        }
+        [TestMethod]
+        public void TestAbsolutePathFromAbsoluteAndAbsolute()
+        {
+            string path = "c:/folder1\\folder2\\";
+            string path2 = "c:\\folder2\\folder3\\file.txt";
+            string expected = path2;
+            string result = PathExtensions.GetAbsolutePath(path, path2);
+            Assert.AreEqual(expected, result);
+        }
     }
 }
