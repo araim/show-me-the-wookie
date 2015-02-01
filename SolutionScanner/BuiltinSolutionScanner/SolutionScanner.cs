@@ -35,7 +35,10 @@ namespace SolutionDependencyScanner
                             pr.ID = m.Groups[3].Value;
                             pr.Name = m.Groups[1].Value;
                             pr.Path = Path.Combine(Path.GetDirectoryName(f.FullName), m.Groups[2].Value);
-                            s.Projects.Add(pr);
+                            if (pr.Path.EndsWith("proj")) //vsproj, vcproj, etc.
+                            {
+                                s.Projects.Add(pr);
+                            }
                         }
                     }
                 }
