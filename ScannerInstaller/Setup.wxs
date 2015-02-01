@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+       xmlns:util = "http://schemas.microsoft.com/wix/UtilExtension"
+       xmlns:netfx= "http://schemas.microsoft.com/wix/NetFxExtension"
+     >
+  <?include $(var.ProjectDir)\Config.wxi ?>
+
+  <Product Id="$(var.ProductId)"
+           Name="$(var.ProductName)"
+           Language="!(loc.LANG)"
+           Version="$(var.SetupVersion)"
+           Manufacturer="$(var.ManufacturerName)"
+           UpgradeCode="$(var.ProductUpgradeCode)">
+
+    <Package InstallerVersion="300"
+             Platform="x86"
+             Compressed="yes"
+             InstallScope="perMachine"
+             Description ="!(loc.ProductDescription) - $(var.Platform)"
+             Keywords ="!(loc.KeyWords)"
+             SummaryCodepage ="!(loc.codePage)"
+             Languages ="1033"
+             Manufacturer="$(var.ManufacturerName)"
+             Comments ="!(loc.ProductComments)"
+             InstallPrivileges="elevated"/>
+    
+    <Icon Id="ScannerRunner.ico" SourceFile="$(var.RepositoryRoot)\wookie.ico"  />
+    <Property Id="ARPPRODUCTICON" Value="ScannerRunner.ico" />
+    <WixVariable Id="WixUIBannerBmp" Value="$(var.ProjectDir)Resources\top.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="$(var.ProjectDir)Resources\left1.bmp" />
+    
+    <Media Id="1" Cabinet="contents.cab" EmbedCab="yes" CompressionLevel="high"/>
+
+    <!-- #################################################################  -->
+    <!-- - - - - - - - - - ..::     UPGRADE      ::..  - - - - - - - - - -  -->
+    <!-- #################################################################  -->
+    
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+
+    <!-- #################################################################  -->
+    <!-- - - - - - - - - - ..::        PRQ       ::..  - - - - - - - - - -  -->
+    <!-- #################################################################  -->
+
+    <!-- Check prerequisits -->
+    <PropertyRef Id="NETFRAMEWORK40FULL"/>
+    <!--  Is .Net 4.0 installed  -->
+    <Condition Message="!(loc.DotNet40)">
+      <![CDATA[Installed OR NETFRAMEWORK40FULL]]>
+    </Condition>
+
+    <!--Componentes-->
+    <Feature Id="FG_Main">
+      <ComponentGroupRef Id="MainCG" />
+    </Feature>
+
+    <!-- #################################################################  -->
+    <!-- - - - - - - - - - ..::        GUI       ::..  - - - - - - - - - -  -->
+    <!-- #################################################################  -->    
+    
+    <UI>
+      <Property Id="WIXUI_INSTALLDIR">INSTALLDIR</Property>
+      <UIRef Id="WixUI_InstallDir_Custom"/>
+    </UI>
+    <!-- #################################################################  -->
+    <!-- - - - - - - - - - ..:: Action Sequence  ::..  - - - - - - - - - -  -->
+    <!-- #################################################################  -->
+    
+    
+    <!-- I N S T A L  U I  S E Q U E N C E -->
+    <InstallUISequence>
+      <FindRelatedProducts Sequence="25"><![CDATA[]]></FindRelatedProducts>
+      <AppSearch Sequence="50"><![CDATA[]]></AppSearch>
+      <Custom Action="WixQueryOsWellKnownSID"           Sequence="62"><![CDATA[VersionNT > 400 OR (VersionNT = 400 AND ServicePackLevel > 3)]]></Custom>
+      <LaunchConditions Sequence="100"><![CDATA[]]></LaunchConditions>
+      <ValidateProductID Sequence="700"><![CDATA[]]></ValidateProductID>
+      <CostInitialize Sequence="800"><![CDATA[]]></CostInitialize>
+      <FileCost Sequence="900"><![CDATA[]]></FileCost>
+      <ExecuteAction Sequence="1300"><![CDATA[]]></ExecuteAction>
+    </InstallUISequence>
+
+    <!-- I N S T A L  E X E C U T E  S E Q U E N C E -->
+    <InstallExecuteSequence>
+      <FindRelatedProducts Sequence="25"></FindRelatedProducts>
+      <AppSearch Sequence="50"></AppSearch>
+      <Custom Action="WixQueryOsWellKnownSID"           Sequence="62"><![CDATA[VersionNT > 400 OR (VersionNT = 400 AND ServicePackLevel > 3)]]></Custom>
+      <LaunchConditions Sequence="100"></LaunchConditions>
+      <ValidateProductID Sequence="700"></ValidateProductID>
+      <CostInitialize Sequence="800"></CostInitialize>
+      <FileCost Sequence="900"></FileCost>
+      <CostFinalize Sequence="1000"></CostFinalize>
+      <InstallValidate Sequence="1400"></InstallValidate>
+      <InstallInitialize Sequence="1500"></InstallInitialize>
+      <ProcessComponents Sequence="1600"></ProcessComponents>
+      <UnpublishFeatures Sequence="1800"></UnpublishFeatures>
+      <StopServices Sequence="1900"><![CDATA[VersionNT]]></StopServices>
+      <DeleteServices Sequence="2000"><![CDATA[VersionNT]]></DeleteServices>
+      <RemoveRegistryValues Sequence="2600"></RemoveRegistryValues>
+      <RemoveFiles Sequence="3500"></RemoveFiles>
+      <RemoveFolders Sequence="3600"></RemoveFolders>
+      <CreateFolders Sequence="3700"></CreateFolders>
+      <InstallFiles Sequence="4000"></InstallFiles>
+      <WriteRegistryValues Sequence="5000"></WriteRegistryValues>
+      <InstallServices Sequence="5800"><![CDATA[VersionNT]]></InstallServices>
+      <StartServices Sequence="5900"><![CDATA[VersionNT]]></StartServices>
+      <RegisterUser Sequence="6000"></RegisterUser>
+      <RegisterProduct Sequence="6100"></RegisterProduct>
+      <PublishFeatures Sequence="6300"></PublishFeatures>
+      <PublishProduct Sequence="6400"></PublishProduct>
+      <InstallFinalize Sequence="6600"></InstallFinalize>
+    </InstallExecuteSequence>
+
+    <!-- #################################################################  -->
+    <!-- - - - - - - - - - ..:: Directories Structure ::.. - - - - - - - -  -->
+    <!-- #################################################################  -->
+
+
+      <Directory Id="TARGETDIR" Name="SourceDir">
+        <Directory Id="$(var.PlatformProgramFilesFolder)" Name="PFiles">
+          <Directory Id="ManufacturerName" Name="$(var.ManufacturerName)">
+            <Directory Id="INSTALLDIR" Name="$(var.ProgramFileFolderName)" >
+               <Directory Id="pl" Name="pl" />
+            </Directory>
+          </Directory>
+        </Directory>
+
+        <Directory Id="DesktopFolder"/>
+      </Directory>
+
+
+
+    <!-- #################################################################  -->
+    <!-- - - - - - - - - - - - - - ..:: Files ::.. - - - - - - - - - - - -  -->
+    <!-- #################################################################  -->
+      <ComponentGroup Id="MainCG">
+        <Component Win64="$(var.Win64)" Id="ShrtcutsDependencyVisualizerGraphX.exe" Directory="INSTALLDIR" Guid="99B8F624-C42C-44ED-B64F-4F1EE070FC7E">
+          <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value="yes" />
+          <Shortcut Id="DesktopShortcut"
+                  Target="[INSTALLDIR]\DependencyVisualizerGraphX.exe"
+                  Directory="DesktopFolder"
+                  Name="$(var.ProductName)"
+                  Description="$(var.ProductName)"
+                  WorkingDirectory="INSTALLDIR"
+                  Icon="ScannerRunner.ico"
+                  Advertise="no" />
+        </Component>
+
+        <Component  Win64="$(var.Win64)" Id="DependencyVisualizerGraphX.exe" Directory="INSTALLDIR" Guid="4922CE83-034B-4D30-9B97-12DCE755E7A8">
+          <File Id="DependencyVisualizerGraphX.exe" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\DependencyVisualizerGraphX.exe" />
+        </Component>
+        <Component  Win64="$(var.Win64)" Id="DependencyVisualizerGraphX.exe.config" Directory="INSTALLDIR" Guid="7CE0BDEA-7C3B-4394-A09E-08E7FD1E0AA9">
+          <File Id="DependencyVisualizerGraphX.exe.config" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\DependencyVisualizerGraphX.exe.config" />
+        </Component>
+        <Component  Win64="$(var.Win64)" Id="GraphX.PCL.Common.dll" Directory="INSTALLDIR" Guid="ED7DF82C-41A3-4F0C-BEB1-F0DF3341ECA0">
+          <File Id="GraphX.PCL.Common.dll" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\GraphX.PCL.Common.dll" />
+        </Component>
+        <Component  Win64="$(var.Win64)" Id="GraphX.PCL.Common.xml" Directory="INSTALLDIR" Guid="4EB57A38-6F9D-4C19-8C8E-EF6069C58491">
+          <File Id="GraphX.PCL.Common.xml" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\GraphX.PCL.Common.xml" />
+        </Component>
+        <Component  Win64="$(var.Win64)" Id="GraphX.PCL.Logic.dll" Directory="INSTALLDIR" Guid="85D16EEB-E087-401D-9886-2F55192940AD">
+          <File Id="GraphX.PCL.Logic.dll" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\GraphX.PCL.Logic.dll" />
+        </Component>
+        <Component  Win64="$(var.Win64)" Id="GraphX.PCL.Logic.xml" Directory="INSTALLDIR" Guid="6A04FABA-8124-4EFF-A0D6-6ACB61DD526B">
+          <File Id="GraphX.PCL.Logic.xml" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\GraphX.PCL.Logic.xml" />
+        </Component>
+        <Component  Win64="$(var.Win64)" Id="GraphX.WPF.Controls.dll" Directory="INSTALLDIR" Guid="73961100-D4C3-4B97-B494-E2B196A01CA9">
+          <File Id="GraphX.WPF.Controls.dll" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\GraphX.WPF.Controls.dll" />
+        </Component>
+        <Component  Win64="$(var.Win64)" Id="GraphX.WPF.Controls.xml" Directory="INSTALLDIR" Guid="102445B4-C9C9-4AB0-8953-1372D90AB1CD">
+          <File Id="GraphX.WPF.Controls.xml" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\GraphX.WPF.Controls.xml" />
+        </Component>
+        <Component  Win64="$(var.Win64)" Id="mscorlib.dll" Directory="INSTALLDIR" Guid="2B8E8ACE-67C4-4269-AEE2-57F216B91E07">
+          <File Id="mscorlib.dll" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\mscorlib.dll" />
+        </Component>
+        <Component  Win64="$(var.Win64)" Id="normidna.nlp" Directory="INSTALLDIR" Guid="AB42BC5B-A9C7-478E-9347-133ADBEB9DE3">
+          <File Id="normidna.nlp" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\normidna.nlp" />
+        </Component>
+        <Component  Win64="$(var.Win64)" Id="normnfc.nlp" Directory="INSTALLDIR" Guid="0E4ABFDC-F3C3-424A-B01E-DF39BD002E3C">
+          <File Id="normnfc.nlp" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\normnfc.nlp" />
+        </Component>
+        <Component  Win64="$(var.Win64)" Id="normnfd.nlp" Directory="INSTALLDIR" Guid="934A5171-DE99-4CCF-A2EF-B67F924F0224">
+          <File Id="normnfd.nlp" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\normnfd.nlp" />
+        </Component>
+        <Component  Win64="$(var.Win64)" Id="normnfkc.nlp" Directory="INSTALLDIR" Guid="356E418A-C6B3-420C-B796-9452FA66347B">
+          <File Id="normnfkc.nlp" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\normnfkc.nlp" />
+        </Component>
+        <Component  Win64="$(var.Win64)" Id="normnfkd.nlp" Directory="INSTALLDIR" Guid="597865DB-4749-4438-856A-FD2CD0312895">
+          <File Id="normnfkd.nlp" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\normnfkd.nlp" />
+        </Component>
+        <Component  Win64="$(var.Win64)" Id="QuickGraph.Data.dll" Directory="INSTALLDIR" Guid="07C63ACF-574A-49E8-8720-ECB5C0692C3C">
+          <File Id="QuickGraph.Data.dll" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\QuickGraph.Data.dll" />
+        </Component>
+        <Component  Win64="$(var.Win64)" Id="QuickGraph.Data.xml" Directory="INSTALLDIR" Guid="AD889BAE-C092-4E84-A3D7-BFE14E82C63E">
+          <File Id="QuickGraph.Data.xml" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\QuickGraph.Data.xml" />
+        </Component>
+        <Component  Win64="$(var.Win64)" Id="QuickGraph.dll" Directory="INSTALLDIR" Guid="1AC9D6E5-0CC5-4FB0-B2D2-9B46623E6F24">
+          <File Id="QuickGraph.dll" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\QuickGraph.dll" />
+        </Component>
+        <Component  Win64="$(var.Win64)" Id="QuickGraph.Graphviz.dll" Directory="INSTALLDIR" Guid="A09F92D2-6566-4654-8304-7FB513286CC9">
+          <File Id="QuickGraph.Graphviz.dll" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\QuickGraph.Graphviz.dll" />
+        </Component>
+        <Component  Win64="$(var.Win64)" Id="QuickGraph.Graphviz.xml" Directory="INSTALLDIR" Guid="529E1CBD-8039-466C-BBD1-29343028E20B">
+          <File Id="QuickGraph.Graphviz.xml" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\QuickGraph.Graphviz.xml" />
+        </Component>
+        <Component  Win64="$(var.Win64)" Id="QuickGraph.Serialization.dll" Directory="INSTALLDIR" Guid="83629B9C-EB87-4CC1-B7A6-92321450E603">
+          <File Id="QuickGraph.Serialization.dll" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\QuickGraph.Serialization.dll" />
+        </Component>
+        <Component  Win64="$(var.Win64)" Id="QuickGraph.Serialization.xml" Directory="INSTALLDIR" Guid="E4F1B5B2-BB4C-4233-A0B2-1393132218E1">
+          <File Id="QuickGraph.Serialization.xml" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\QuickGraph.Serialization.xml" />
+        </Component>
+        <Component  Win64="$(var.Win64)" Id="QuickGraph.xml" Directory="INSTALLDIR" Guid="628FB4DA-C6F4-4C1B-AADC-0F973C3293CA">
+          <File Id="QuickGraph.xml" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\QuickGraph.xml" />
+        </Component>
+        <Component  Win64="$(var.Win64)" Id="SolutionScanner.dll" Directory="INSTALLDIR" Guid="863EB0AE-157B-487A-A77B-5DA25071738C">
+          <File Id="SolutionScanner.dll" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\SolutionScanner.dll" />
+        </Component>
+        <Component  Win64="$(var.Win64)" Id="mscorlib.resources.dll" Directory="pl" Guid="032C1A59-F4FF-4904-A5FB-72603E9E4A0C">
+          <File Id="mscorlib.resources.dll" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\pl\mscorlib.resources.dll" />
+        </Component>        
+        
+      </ComponentGroup>
+
+  </Product>
+</Wix>
