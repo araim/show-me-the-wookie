@@ -132,8 +132,7 @@ namespace DependencyVisualizerGraphX
             DialogResult result = dlg.ShowDialog();
             if (result == System.Windows.Forms.DialogResult.OK)
             {
-                RootPath.Text = dlg.SelectedPath;
-              scanBtn.IsEnabled = true;
+                RootPath.Text = dlg.SelectedPath;             
             }
           
         }

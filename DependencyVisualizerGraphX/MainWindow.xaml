@@ -17,7 +17,7 @@
         <Button Margin="457,10,0,0"  Padding="5,0,5,0" DockPanel.Dock="Right" Width="37" Click="BrowseFolder" HorizontalAlignment="Left" VerticalAlignment="Top" Height="23">...</Button>
 
 
-        <Button x:Name="scanBtn" Content="Scan" Margin ="499,10,10,67" Height="23" DockPanel.Dock ="Top" Click="scanBtn_Click" IsEnabled="False"/>
+        <Button x:Name="scanBtn" Content="Scan" Margin ="499,10,10,67" Height="23" DockPanel.Dock ="Top" Click="scanBtn_Click"/>
         <ComboBox Name ="SolutionList" ItemsSource ="{Binding ElementName=root,Path=Solutions}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="442" Height="25" Margin="10,56,0,0" IsEnabled="False" />
         <Button x:Name="plotBtn" Content="Plot" Margin ="457,56,10,19" Height="25" DockPanel.Dock ="Top" Click="plotBtn_Click" IsEnabled="False"/>
         <Label Content="Path:" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top" Height="23"/>
