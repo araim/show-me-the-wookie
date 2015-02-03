@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SolutionDependencyScanner
 {
-    public sealed class ScanResult
+    public sealed class SolutionDependencyScanProduct
     {
 
         internal ISet<SolutionScaffold> Scaffolds { get; set; }

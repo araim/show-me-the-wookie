@@ -36,9 +36,9 @@ namespace SolutionDependencyScanner
             scanner = new SolutionScanner();
         }
 
-        public ScanResult Scan()
+        public SolutionDependencyScanProduct Scan()
         {
-            ScanResult scr = new ScanResult();
+            SolutionDependencyScanProduct scr = new SolutionDependencyScanProduct();
             ISet<SolutionScaffold> set = ScanAndFindRoots();
             scr.Scaffolds = set;
             ResolveProjects(scr);
@@ -47,7 +47,7 @@ namespace SolutionDependencyScanner
             return scr;
         }
 
-        private void FindSolutions(ScanResult scr)
+        private void FindSolutions(SolutionDependencyScanProduct scr)
         {
             ISet<Solution> slns = new HashSet<Solution>();
 
@@ -76,7 +76,7 @@ namespace SolutionDependencyScanner
         }
 
 
-        private void ResolveProjects(ScanResult sr)
+        private void ResolveProjects(SolutionDependencyScanProduct sr)
         {
             IDictionary<string, Project> allProjects = new Dictionary<string, Project>();
             Dictionary<string, Project> assembliesMap = new Dictionary<string, Project>();
@@ -121,7 +121,7 @@ namespace SolutionDependencyScanner
             }
         }
 
-        private void DetermineDependencies(ScanResult sr)
+        private void DetermineDependencies(SolutionDependencyScanProduct sr)
         {
             foreach (Project p in sr.Projects.Values)
             {

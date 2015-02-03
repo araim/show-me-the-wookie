@@ -32,7 +32,8 @@ namespace DependencyVisualizerGraphX
         private DependencyGraph graph = new DependencyGraph();
         private ObservableCollection<SolutionSerializableToNameAndPath> slns = new ObservableCollection<SolutionSerializableToNameAndPath>();
 
-        private ScanResult sr;
+
+        private GraphFactory factory;
 
         private Color c1 = Color.FromRgb(0x33, 0x33, 0x33);
         private Color c2 = Color.FromRgb(0x66, 0x22, 0x22);
@@ -132,17 +133,17 @@ namespace DependencyVisualizerGraphX
             DialogResult result = dlg.ShowDialog();
             if (result == System.Windows.Forms.DialogResult.OK)
             {
-                RootPath.Text = dlg.SelectedPath;             
+                RootPath.Text = dlg.SelectedPath;
             }
-          
+
         }
 
         private void scanBtn_Click(object sender, RoutedEventArgs e)
         {
-          scanBtn.IsEnabled = false;
+            scanBtn.IsEnabled = false;
             string path = RootPath.Text;
             SolutionDependencyScanner.Scanner s = new SolutionDependencyScanner.Scanner(path);
-            sr = s.Scan();
+            var sr = s.Scan();
             slns.Clear();
             List<Solution> l = new List<Solution>();
             l.AddRange(sr.Solutions);
@@ -154,85 +155,29 @@ namespace DependencyVisualizerGraphX
                 slns.Add(new SolutionSerializableToNameAndPath(sln));
             }
 
-          scanBtn.IsEnabled = true;
-          plotBtn.IsEnabled = true;
-          SolutionList.IsEnabled = true;
+            factory = new GraphFactory(sr);
+
+            scanBtn.IsEnabled = true;
+            plotBtn.IsEnabled = true;
+            SolutionList.IsEnabled = true;
+        }
+
+
+        private DependencyGraph CreateGraphForSolution(Solution sln)
+        {
+            return factory.CreateGraph(sln);
         }
 
         private void plotBtn_Click(object sender, RoutedEventArgs e)
         {
-            //var g = new BidirectionalGraph<object, IEdge<object>>();
 
             SolutionSerializableToNameAndPath slnser = SolutionList.SelectedItem as SolutionSerializableToNameAndPath;
             Solution sln = slnser.Solution;
 
-            ISet<string> displayedProjects = new HashSet<string>();
-            Queue<Project> projectsToProcess = new Queue<Project>();
-            Dictionary<string, DependencyVertex> vertices = new Dictionary<string, DependencyVertex>();
+
+
             Area.ClearLayout();
-            graph = new DependencyGraph();
-
-            foreach (var p in sln.Projects)
-            {
-                projectsToProcess.Enqueue(p);
-            }
-            while (projectsToProcess.Count > 0)
-            {
-                Project p = projectsToProcess.Dequeue();
-                if (!displayedProjects.Contains(p.ID))
-                {
-                    displayedProjects.Add(p.ID);
-                    var dv = new DependencyVertex(p.AssemblyName);
-                    vertices[p.AssemblyName] = dv;
-                    graph.AddVertex(dv);
-                }
-                foreach (Project subp in p.Dependencies.ImplicitProjectDependencies)
-                {
-                    if (!displayedProjects.Contains(subp.ID))
-                    {
-                        var dv = new DependencyVertex(subp.AssemblyName);
-                        vertices[subp.AssemblyName] = dv;
-                        graph.AddVertex(dv);
-                        displayedProjects.Add(subp.ID);
-                        projectsToProcess.Enqueue(subp);
-                    }
-                    graph.AddEdge(new DependencyEdge(vertices[p.AssemblyName], vertices[subp.AssemblyName], 1));
-                }
-                foreach (ProjectReference subp in p.Dependencies.ReferencedProjectDependencies)
-                {
-
-                    if (sr.Projects.ContainsKey(subp.ID))
-                    {
-                        string pname = sr.Projects[subp.ID].AssemblyName;
-                        if (!displayedProjects.Contains(subp.ID))
-                        {
-                            var dv = new DependencyVertex(pname);
-                            vertices[pname] = dv;
-                            graph.AddVertex(dv);
-                            displayedProjects.Add(subp.ID);
-                        }
-                        graph.AddEdge(new DependencyEdge(vertices[p.AssemblyName], vertices[pname], 1));
-                    }
-                }
-            }
-
-            foreach (var s in sr.Solutions)
-            {
-                var cross = s.Projects.Where((el, idx) => displayedProjects.Contains(el.ID));
-                if (cross.Count() > 0)
-                {
-                    string sol = "SOLUTION:" + s.Name;
-                    var dv = new DependencyVertex(sol);
-                    vertices[sol] = dv;
-                    graph.AddVertex(dv);
-
-                    foreach (var p in cross)
-                    {
-                        graph.AddEdge(new DependencyEdge(vertices[sol], vertices[p.AssemblyName], 1));
-                    }
-                }
-            }
-          
+            graph = CreateGraphForSolution(sln);
             Area.GetLogicCore<DependencyGraphLogicCore>().DefaultEdgeRoutingAlgorithm = EdgeRoutingAlgorithmTypeEnum.SimpleER;
             var srp = (SimpleERParameters)Area.GetLogicCore<DependencyGraphLogicCore>().AlgorithmFactory.CreateEdgeRoutingParameters(EdgeRoutingAlgorithmTypeEnum.SimpleER);
 
@@ -267,20 +212,20 @@ namespace DependencyVisualizerGraphX
             ClearHighlight();
 
             new HighlightSpreadAnimation<DependencyEdge, DependencyVertex, DependencyGraphArea>(Area, c1, c2, c3).AnimateVertexForward(args.VertexControl);
-            new HighlightSpreadAnimation<DependencyEdge, DependencyVertex, DependencyGraphArea>(Area, c4, c5, c6,false).AnimateVertexForward(args.VertexControl);
+            new HighlightSpreadAnimation<DependencyEdge, DependencyVertex, DependencyGraphArea>(Area, c4, c5, c6, false).AnimateVertexForward(args.VertexControl);
 
         }
 
         private void ClearHighlight()
         {
-            
+
             foreach (VertexControl vc in Area.GetAllVertexControls())
             {
-                vc.Foreground = new SolidColorBrush(c1);;
+                vc.Foreground = new SolidColorBrush(c1); ;
             }
             foreach (EdgeControl ec in Area.EdgesList.Values)
             {
-                ec.Foreground = new SolidColorBrush(c1);;
+                ec.Foreground = new SolidColorBrush(c1); ;
             }
         }
 
