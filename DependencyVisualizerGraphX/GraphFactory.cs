@@ -9,6 +9,13 @@ namespace DependencyVisualizerGraphX
 {
     internal class GraphFactory
     {
+        private DependencyGraph graph;
+        private ISet<string> alreadySelectedProjects;
+        private Queue<Project> projectsToProcess;
+        private Dictionary<string, DependencyVertex> vertices;
+        private GraphCreationOptions options;
+        private Solution root;
+
 
         private readonly SolutionDependencyScanProduct scanProduct;
 
@@ -19,81 +26,131 @@ namespace DependencyVisualizerGraphX
 
         public DependencyGraph CreateGraph(Solution rootSolution, GraphCreationOptions options = GraphCreationOptions.None)
         {
-            var graph = new DependencyGraph();
-            ISet<string> alreadySelectedProjects = new HashSet<string>();
-            Queue<Project> projectsToProcess = new Queue<Project>();
-            Dictionary<string, DependencyVertex> vertices = new Dictionary<string, DependencyVertex>();
+            PrepareEmptyGraph(rootSolution, options);
+            IncludeInitialSetOfProjects();
 
-            foreach (var p in rootSolution.Projects)
-            {
-                projectsToProcess.Enqueue(p);
-            }
             while (projectsToProcess.Count > 0)
             {
                 Project p = projectsToProcess.Dequeue();
-                if (!alreadySelectedProjects.Contains(p.ID))
-                {
-                    alreadySelectedProjects.Add(p.ID);
-                    var dv = new DependencyVertex(p.AssemblyName);
-                    vertices[p.AssemblyName] = dv;
-                    graph.AddVertex(dv);
-                }
-                foreach (Project subp in p.Dependencies.ImplicitProjectDependencies)
-                {
-                    if (!alreadySelectedProjects.Contains(subp.ID))
-                    {
-                        var dv = new DependencyVertex(subp.AssemblyName);
-                        vertices[subp.AssemblyName] = dv;
-                        graph.AddVertex(dv);
-                        alreadySelectedProjects.Add(subp.ID);
-                        projectsToProcess.Enqueue(subp);
-                    }
-                    graph.AddEdge(new DependencyEdge(vertices[p.AssemblyName], vertices[subp.AssemblyName], 1));
-                }
-                foreach (ProjectReference subp in p.Dependencies.ReferencedProjectDependencies)
-                {
-
-                    if (scanProduct.Projects.ContainsKey(subp.ID))
-                    {
-                        string pname = scanProduct.Projects[subp.ID].AssemblyName;
-                        if (!alreadySelectedProjects.Contains(subp.ID))
-                        {
-                            var dv = new DependencyVertex(pname);
-                            vertices[pname] = dv;
-                            graph.AddVertex(dv);
-                            alreadySelectedProjects.Add(subp.ID);
-                        }
-                        graph.AddEdge(new DependencyEdge(vertices[p.AssemblyName], vertices[pname], 1));
-                    }
-                }
-
+                ProcessProjectAndItsDependencies(p);
             }
-            if (options.HasFlag(GraphCreationOptions.IncludeSolutionsReferencingSelectedProjects))
-            {
-                AddSolutionsThatDependOnSelectedProjects(graph, alreadySelectedProjects, vertices);
-            }
+            IncludeRootSolution();
+            ProcessOptionalGraphElements();
             return graph;
 
         }
 
-        private void AddSolutionsThatDependOnSelectedProjects(DependencyGraph graph, ISet<string> displayedProjects, Dictionary<string, DependencyVertex> vertices)
+        private void IncludeRootSolution()
         {
+            IncludeSolution("SOLUTION : " + root.Name, root.Projects);
+        }
 
+        private void ProcessOptionalGraphElements()
+        {
+            if (options.HasFlag(GraphCreationOptions.IncludeSolutionsReferencingSelectedProjects))
+            {
+                AddSolutionsThatDependOnSelectedProjects();
+            }
+        }
+
+        private void ProcessProjectAndItsDependencies(Project p)
+        {
+            if (!alreadySelectedProjects.Contains(p.ID))
+            {
+                AddVertex(p);
+            }
+            ProcessImplicitProjectDependencies(p);
+            ProcessReferencedProjects(p);
+        }
+
+        private void ProcessReferencedProjects(Project p)
+        {
+            foreach (ProjectReference subp in p.Dependencies.ReferencedProjectDependencies)
+            {
+                if (scanProduct.Projects.ContainsKey(subp.ID))
+                {
+                    string pname = scanProduct.Projects[subp.ID].AssemblyName;
+                    if (!alreadySelectedProjects.Contains(subp.ID))
+                    {
+                        AddVertex(pname, subp.ID);
+                    }
+                    AddEdge(p.AssemblyName, pname);
+                }
+            }
+        }
+
+        private void ProcessImplicitProjectDependencies(Project p)
+        {
+            foreach (Project subp in p.Dependencies.ImplicitProjectDependencies)
+            {
+                if (!alreadySelectedProjects.Contains(subp.ID))
+                {
+                    AddVertex(subp);
+                    projectsToProcess.Enqueue(subp);
+                }
+                AddEdge(p.AssemblyName, subp.AssemblyName);
+            }
+        }
+
+        private void AddEdge(string from, string to)
+        {
+            graph.AddEdge(new DependencyEdge(vertices[from], vertices[to], 1));
+        }
+
+        private void AddVertex(Project p)
+        {
+            AddVertex(p.AssemblyName, p.ID);
+        }
+
+        private void AddVertex(string name)
+        {
+            var dv = new DependencyVertex(name);
+            vertices[name] = dv;
+            graph.AddVertex(dv);
+        }
+
+        private void AddVertex(string name, string projectId)
+        {
+            AddVertex(name);
+            alreadySelectedProjects.Add(projectId);
+        }
+
+        private void IncludeInitialSetOfProjects()
+        {
+            foreach (var p in root.Projects)
+            {
+                projectsToProcess.Enqueue(p);
+            }
+        }
+
+        private void PrepareEmptyGraph(Solution rootSolution, GraphCreationOptions opts)
+        {
+            root = rootSolution;
+            graph = new DependencyGraph();
+            options = opts;
+            alreadySelectedProjects = new HashSet<string>();
+            projectsToProcess = new Queue<Project>();
+            vertices = new Dictionary<string, DependencyVertex>();
+        }
+
+        private void AddSolutionsThatDependOnSelectedProjects()
+        {
             foreach (var s in scanProduct.Solutions)
             {
-                var cross = s.Projects.Where((el, idx) => displayedProjects.Contains(el.ID));
+                var cross = s.Projects.Where((el, idx) => alreadySelectedProjects.Contains(el.ID));
                 if (cross.Count() > 0)
                 {
-                    string sol = "SOLUTION:" + s.Name;
-                    var dv = new DependencyVertex(sol);
-                    vertices[sol] = dv;
-                    graph.AddVertex(dv);
-
-                    foreach (var p in cross)
-                    {
-                        graph.AddEdge(new DependencyEdge(vertices[sol], vertices[p.AssemblyName], 1));
-                    }
+                    IncludeSolution("SOLUTION:" + s.Name, cross);
                 }
+            }
+        }
+
+        private void IncludeSolution(string name, IEnumerable<Project> cross)
+        {
+            AddVertex(name);
+            foreach (var p in cross)
+            {
+                AddEdge(name, p.AssemblyName);
             }
         }
 

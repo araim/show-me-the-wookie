@@ -165,7 +165,7 @@ namespace DependencyVisualizerGraphX
 
         private DependencyGraph CreateGraphForSolution(Solution sln)
         {
-            return factory.CreateGraph(sln);
+            return factory.CreateGraph(sln,GraphCreationOptions.IncludeSolutionsReferencingSelectedProjects);
         }
 
         private void plotBtn_Click(object sender, RoutedEventArgs e)
