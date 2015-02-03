@@ -85,7 +85,8 @@
     <Compile Include="DependencyGraphArea.cs" />
     <Compile Include="DependencyGraphLogicCore.cs" />
     <Compile Include="DependencyVertex.cs" />
-    <Compile Include="GrephFactory.cs" />
+    <Compile Include="GraphCreationOptions.cs" />
+    <Compile Include="GraphFactory.cs" />
     <Compile Include="HighlightSpreadAnimation.cs" />
     <Compile Include="SolutionSerializableToNameAndPath.cs" />
     <Page Include="MainWindow.xaml">
