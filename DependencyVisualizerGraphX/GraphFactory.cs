@@ -17,7 +17,7 @@ namespace DependencyVisualizerGraphX
             scanProduct = sr;
         }
 
-        public DependencyGraph CreateGraph(Solution rootSolution)
+        public DependencyGraph CreateGraph(Solution rootSolution, GraphCreationOptions options = GraphCreationOptions.None)
         {
             var graph = new DependencyGraph();
             ISet<string> alreadySelectedProjects = new HashSet<string>();
@@ -68,7 +68,10 @@ namespace DependencyVisualizerGraphX
                 }
 
             }
-            AddSolutionsThatDependOnSelectedProjects(graph, alreadySelectedProjects, vertices);
+            if (options.HasFlag(GraphCreationOptions.IncludeSolutionsReferencingSelectedProjects))
+            {
+                AddSolutionsThatDependOnSelectedProjects(graph, alreadySelectedProjects, vertices);
+            }
             return graph;
 
         }
