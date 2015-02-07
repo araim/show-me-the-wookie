@@ -7,7 +7,7 @@
   <String Id="KeyWords" Overridable="yes">Show Me The Wookie</String>
   <String Id="ProductComments" Overridable="yes">Show Me The Wookie</String>
 
-  <String Id="DotNet40" Overridable="yes">This application requires .NET Framework 4.5. Please install the .NET Framework then run this installer again.</String>
+  <String Id="DotNet45" Overridable="yes">This application requires .NET Framework 4.5. Please install the .NET Framework then run this installer again.</String>
 
   
 </WixLocalization>

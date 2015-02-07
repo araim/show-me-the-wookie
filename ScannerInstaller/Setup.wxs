@@ -42,10 +42,10 @@
     <!-- #################################################################  -->
 
     <!-- Check prerequisits -->
-    <PropertyRef Id="NETFRAMEWORK40FULL"/>
-    <!--  Is .Net 4.0 installed  -->
-    <Condition Message="!(loc.DotNet40)">
-      <![CDATA[Installed OR NETFRAMEWORK40FULL]]>
+    <PropertyRef Id="NETFRAMEWORK45"/>
+    <!--  Is .Net 4.5 installed  -->
+    <Condition Message="!(loc.DotNet45)">
+      <![CDATA[Installed OR NETFRAMEWORK45]]>
     </Condition>
 
     <!--Componentes-->
@@ -168,24 +168,6 @@
         <Component  Win64="$(var.Win64)" Id="GraphX.WPF.Controls.xml" Directory="INSTALLDIR" Guid="102445B4-C9C9-4AB0-8953-1372D90AB1CD">
           <File Id="GraphX.WPF.Controls.xml" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\GraphX.WPF.Controls.xml" />
         </Component>
-        <Component  Win64="$(var.Win64)" Id="mscorlib.dll" Directory="INSTALLDIR" Guid="2B8E8ACE-67C4-4269-AEE2-57F216B91E07">
-          <File Id="mscorlib.dll" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\mscorlib.dll" />
-        </Component>
-        <Component  Win64="$(var.Win64)" Id="normidna.nlp" Directory="INSTALLDIR" Guid="AB42BC5B-A9C7-478E-9347-133ADBEB9DE3">
-          <File Id="normidna.nlp" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\normidna.nlp" />
-        </Component>
-        <Component  Win64="$(var.Win64)" Id="normnfc.nlp" Directory="INSTALLDIR" Guid="0E4ABFDC-F3C3-424A-B01E-DF39BD002E3C">
-          <File Id="normnfc.nlp" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\normnfc.nlp" />
-        </Component>
-        <Component  Win64="$(var.Win64)" Id="normnfd.nlp" Directory="INSTALLDIR" Guid="934A5171-DE99-4CCF-A2EF-B67F924F0224">
-          <File Id="normnfd.nlp" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\normnfd.nlp" />
-        </Component>
-        <Component  Win64="$(var.Win64)" Id="normnfkc.nlp" Directory="INSTALLDIR" Guid="356E418A-C6B3-420C-B796-9452FA66347B">
-          <File Id="normnfkc.nlp" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\normnfkc.nlp" />
-        </Component>
-        <Component  Win64="$(var.Win64)" Id="normnfkd.nlp" Directory="INSTALLDIR" Guid="597865DB-4749-4438-856A-FD2CD0312895">
-          <File Id="normnfkd.nlp" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\normnfkd.nlp" />
-        </Component>
         <Component  Win64="$(var.Win64)" Id="QuickGraph.Data.dll" Directory="INSTALLDIR" Guid="07C63ACF-574A-49E8-8720-ECB5C0692C3C">
           <File Id="QuickGraph.Data.dll" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\QuickGraph.Data.dll" />
         </Component>
@@ -213,9 +195,9 @@
         <Component  Win64="$(var.Win64)" Id="SolutionScanner.dll" Directory="INSTALLDIR" Guid="863EB0AE-157B-487A-A77B-5DA25071738C">
           <File Id="SolutionScanner.dll" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\SolutionScanner.dll" />
         </Component>
-        <Component  Win64="$(var.Win64)" Id="mscorlib.resources.dll" Directory="pl" Guid="032C1A59-F4FF-4904-A5FB-72603E9E4A0C">
+        <!--<Component  Win64="$(var.Win64)" Id="mscorlib.resources.dll" Directory="pl" Guid="032C1A59-F4FF-4904-A5FB-72603E9E4A0C">
           <File Id="mscorlib.resources.dll" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\pl\mscorlib.resources.dll" />
-        </Component>        
+        </Component>-->        
         
       </ComponentGroup>
 
