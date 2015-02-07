@@ -59,40 +59,11 @@ namespace DependencyVisualizerGraphX
             zoomctrl.ZoomToFill();
         }
 
-        private DependencyGraph GraphExample_Setup()
-        {
-            //Lets make new data graph instance
-            var dataGraph = new DependencyGraph();
-            //Now we need to create edges and vertices to fill data graph
-            //This edges and vertices will represent graph structure and connections
-            //Lets make some vertices
-            for (int i = 1; i < 10; i++)
-            {
-                //Create new vertex with specified Text. Also we will assign custom unique ID.
-                //This ID is needed for several features such as serialization and edge routing algorithms.
-                //If you don't need any custom IDs and you are using automatic Area.GenerateGraph() method then you can skip ID assignment
-                //because specified method automaticaly assigns missing data ids (this behavior controlled by method param).
-                var dataVertex = new DependencyVertex("MyVertex " + i) { ID = i };
-                //Add vertex to data graph
-                dataGraph.AddVertex(dataVertex);
-            }
-
-            //Now lets make some edges that will connect our vertices
-            //get the indexed list of graph vertices we have already added
-            var vlist = dataGraph.Vertices.ToList();
-            //Then create two edges optionaly defining Text property to show who are connected
-            var dataEdge = new DependencyEdge(vlist[0], vlist[1]) { Text = string.Format("{0} -> {1}", vlist[0], vlist[1]) };
-            dataGraph.AddEdge(dataEdge);
-            dataEdge = new DependencyEdge(vlist[2], vlist[3]) { Text = string.Format("{0} -> {1}", vlist[2], vlist[3]) };
-            dataGraph.AddEdge(dataEdge);
-
-            return dataGraph;
-        }
 
         private void GraphArea_Setup()
         {
             //Lets create logic core and filled data graph with edges and vertices
-            var logicCore = new DependencyGraphLogicCore() { Graph = GraphExample_Setup() };
+            var logicCore = new DependencyGraphLogicCore() { Graph = new DependencyGraph() };
             //This property sets layout algorithm that will be used to calculate vertices positions
             //Different algorithms uses different values and some of them uses edge Weight property.
             logicCore.DefaultLayoutAlgorithm = LayoutAlgorithmTypeEnum.FR;
