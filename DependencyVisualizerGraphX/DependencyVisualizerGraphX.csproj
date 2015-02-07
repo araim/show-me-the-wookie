@@ -39,6 +39,9 @@
     <ApplicationIcon>wookie.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FirstFloor.ModernUI">
+      <HintPath>..\packages\ModernUI.WPF.1.0.6\lib\net45\FirstFloor.ModernUI.dll</HintPath>
+    </Reference>
     <Reference Include="GraphX.PCL.Common">
       <HintPath>..\packages\GraphX.2.1.7\lib\net40-client\GraphX.PCL.Common.dll</HintPath>
     </Reference>
@@ -87,7 +90,14 @@
     <Compile Include="DependencyVertex.cs" />
     <Compile Include="GraphCreationOptions.cs" />
     <Compile Include="GraphFactory.cs" />
+    <Compile Include="GraphKeeper.cs" />
     <Compile Include="HighlightSpreadAnimation.cs" />
+    <Compile Include="Pages\Config.xaml.cs">
+      <DependentUpon>Config.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\GraphPresenter.xaml.cs">
+      <DependentUpon>GraphPresenter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SolutionSerializableToNameAndPath.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -101,6 +111,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Pages\Config.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\GraphPresenter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

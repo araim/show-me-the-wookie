@@ -5,8 +5,14 @@
              xmlns:gxl="clr-namespace:GraphX;assembly=GraphX.WPF.Controls"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-
-        <Style TargetType="{x:Type gxl:VertexControl}">
+     <ResourceDictionary>
+       <ResourceDictionary.MergedDictionaries>
+         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.xaml" />
+         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.Light.xaml"/>
+       </ResourceDictionary.MergedDictionaries>
+           
+    
+      <Style TargetType="{x:Type gxl:VertexControl}">
             
             <Setter Property="Background" Value="#FFE3E3E3"/>
             <Setter Property="BorderThickness" Value="5,3,5,3"/>
@@ -132,6 +138,6 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-       
-    </Application.Resources>
+    </ResourceDictionary>
+  </Application.Resources>
 </Application>

@@ -20,194 +20,22 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using FirstFloor.ModernUI.Windows.Controls;
 
 namespace DependencyVisualizerGraphX
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+  public partial class MainWindow : ModernWindow 
     {
 
-        private DependencyGraph graph = new DependencyGraph();
-        private ObservableCollection<SolutionSerializableToNameAndPath> slns = new ObservableCollection<SolutionSerializableToNameAndPath>();
-
-
-        private GraphFactory factory;
-
-        private Color c1 = Color.FromRgb(0x33, 0x33, 0x33);
-        private Color c2 = Color.FromRgb(0x66, 0x22, 0x22);
-        private Color c3 = Color.FromRgb(0x99, 0x11, 0x11);
-
-        private Color c4 = Color.FromRgb(0x33, 0x33, 0x33);
-        private Color c5 = Color.FromRgb(0x22, 0x22, 0x66);
-        private Color c6 = Color.FromRgb(0x11, 0x11, 0x99);
-
+       
         public MainWindow()
         {
             DataContext = this;
             InitializeComponent();
-            GraphArea_Setup();
-            SolutionList.ItemsSource = slns;
-            Loaded += MainWindow_Loaded;
-            Area.VertexDoubleClick += Area_VertexDoubleClick;
-        }
-
-        void MainWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            Area.GenerateGraph(true, true);
-            zoomctrl.ZoomToFill();
-        }
-
-
-        private void GraphArea_Setup()
-        {
-            //Lets create logic core and filled data graph with edges and vertices
-            var logicCore = new DependencyGraphLogicCore() { Graph = new DependencyGraph() };
-            //This property sets layout algorithm that will be used to calculate vertices positions
-            //Different algorithms uses different values and some of them uses edge Weight property.
-            logicCore.DefaultLayoutAlgorithm = LayoutAlgorithmTypeEnum.FR;
-            //Now we can set parameters for selected algorithm using AlgorithmFactory property. This property provides methods for
-            //creating all available algorithms and algo parameters.
-            logicCore.DefaultLayoutAlgorithmParams = logicCore.AlgorithmFactory.CreateLayoutParameters(LayoutAlgorithmTypeEnum.FR);
-            //Unfortunately to change algo parameters you need to specify params type which is different for every algorithm.
-            //            ((LinLogLayoutParameters)logicCore.DefaultLayoutAlgorithmParams).IterationCount = 15;
-
-            //This property sets vertex overlap removal algorithm.
-            //Such algorithms help to arrange vertices in the layout so no one overlaps each other.
-            logicCore.DefaultOverlapRemovalAlgorithm = OverlapRemovalAlgorithmTypeEnum.FSA;
-            //Default parameters are created automaticaly when new default algorithm is set and previous params were NULL
-            logicCore.DefaultOverlapRemovalAlgorithmParams.HorizontalGap = 150;
-            logicCore.DefaultOverlapRemovalAlgorithmParams.VerticalGap = 50;
-
-            //This property sets edge routing algorithm that is used to build route paths according to algorithm logic.
-            //For ex., SimpleER algorithm will try to set edge paths around vertices so no edge will intersect any vertex.
-            //Bundling algorithm will try to tie different edges that follows same direction to a single channel making complex graphs more appealing.
-            logicCore.DefaultEdgeRoutingAlgorithm = EdgeRoutingAlgorithmTypeEnum.SimpleER;
-
-            //This property sets async algorithms computation so methods like: Area.RelayoutGraph() and Area.GenerateGraph()
-            //will run async with the UI thread. Completion of the specified methods can be catched by corresponding events:
-            //Area.RelayoutFinished and Area.GenerateGraphFinished.
-            logicCore.AsyncAlgorithmCompute = false;
-
-            //Finally assign logic core to GraphArea object
-            Area.LogicCore = logicCore;// as IGXLogicCore<DataVertex, DataEdge, BidirectionalGraph<DataVertex, DataEdge>>;
-        }
-
-        private void BrowseFolder(object sender, RoutedEventArgs e)
-        {
-            FolderBrowserDialog dlg = new FolderBrowserDialog();
-            dlg.ShowNewFolderButton = false;
-
-            dlg.SelectedPath = RootPath.Text;
-
-            DialogResult result = dlg.ShowDialog();
-            if (result == System.Windows.Forms.DialogResult.OK)
-            {
-                RootPath.Text = dlg.SelectedPath;
-            }
-
-        }
-
-        private void scanBtn_Click(object sender, RoutedEventArgs e)
-        {
-            scanBtn.IsEnabled = false;
-            string path = RootPath.Text;
-            SolutionDependencyScanner.Scanner s = new SolutionDependencyScanner.Scanner(path);
-            var sr = s.Scan();
-            slns.Clear();
-            List<Solution> l = new List<Solution>();
-            l.AddRange(sr.Solutions);
-
-            l.Sort((s1, s2) => s1.Name.CompareTo(s2.Name));
-
-            foreach (Solution sln in l)
-            {
-                slns.Add(new SolutionSerializableToNameAndPath(sln));
-            }
-
-            factory = new GraphFactory(sr);
-
-            scanBtn.IsEnabled = true;
-            plotBtn.IsEnabled = true;
-            SolutionList.IsEnabled = true;
-        }
-
-
-        private DependencyGraph CreateGraphForSolution(Solution sln)
-        {
-            return factory.CreateGraph(sln,GraphCreationOptions.IncludeSolutionsReferencingSelectedProjects);
-        }
-
-        private void plotBtn_Click(object sender, RoutedEventArgs e)
-        {
-
-            SolutionSerializableToNameAndPath slnser = SolutionList.SelectedItem as SolutionSerializableToNameAndPath;
-            Solution sln = slnser.Solution;
-
-
-
-            Area.ClearLayout();
-            graph = CreateGraphForSolution(sln);
-            Area.GetLogicCore<DependencyGraphLogicCore>().DefaultEdgeRoutingAlgorithm = EdgeRoutingAlgorithmTypeEnum.SimpleER;
-            var srp = (SimpleERParameters)Area.GetLogicCore<DependencyGraphLogicCore>().AlgorithmFactory.CreateEdgeRoutingParameters(EdgeRoutingAlgorithmTypeEnum.SimpleER);
-
-            Area.GetLogicCore<DependencyGraphLogicCore>().DefaultEdgeRoutingAlgorithmParams = srp;
-
-            Area.GetLogicCore<DependencyGraphLogicCore>().DefaultLayoutAlgorithm = LayoutAlgorithmTypeEnum.LinLog;
-
-
-            Area.GetLogicCore<DependencyGraphLogicCore>().DefaultOverlapRemovalAlgorithm = OverlapRemovalAlgorithmTypeEnum.FSA;
-            Area.GetLogicCore<DependencyGraphLogicCore>().DefaultOverlapRemovalAlgorithmParams = Area.LogicCore.AlgorithmFactory.CreateOverlapRemovalParameters(OverlapRemovalAlgorithmTypeEnum.FSA);
-            Area.GetLogicCore<DependencyGraphLogicCore>().DefaultOverlapRemovalAlgorithmParams.HorizontalGap = 50;
-            Area.GetLogicCore<DependencyGraphLogicCore>().DefaultOverlapRemovalAlgorithmParams.VerticalGap = 50;
-
-
-            //Area.MouseOverAnimation = new HighlightSpreadAnimation<DependencyEdge, DependencyVertex, DependencyGraphArea>(Area);
-
-
-            Area.GenerateGraph(graph, true);
-            ClearHighlight();
-            Area.SetVerticesDrag(true, true);
-            zoomctrl.ZoomToFill();
-            //Area.GenerateGraph(graph,true);
-            /*Area.RelayoutGraph();
-            Area.GenerateAllEdges();
-            Area.RelayoutGraph(true);
-            Area.SetVerticesDrag(true);*/
-            ///zoomctrl.Mode = ZoomControlModes.Custom;
-        }
-
-        void Area_VertexDoubleClick(object sender, VertexSelectedEventArgs args)
-        {
-            ClearHighlight();
-
-            new HighlightSpreadAnimation<DependencyEdge, DependencyVertex, DependencyGraphArea>(Area, c1, c2, c3).AnimateVertexForward(args.VertexControl);
-            new HighlightSpreadAnimation<DependencyEdge, DependencyVertex, DependencyGraphArea>(Area, c4, c5, c6, false).AnimateVertexForward(args.VertexControl);
-
-        }
-
-        private void ClearHighlight()
-        {
-
-            foreach (VertexControl vc in Area.GetAllVertexControls())
-            {
-                vc.Foreground = new SolidColorBrush(c1); ;
-            }
-            foreach (EdgeControl ec in Area.EdgesList.Values)
-            {
-                ec.Foreground = new SolidColorBrush(c1); ;
-            }
-        }
-
-        private void graphLayout_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            //zc.AnimationLength = TimeSpan.Zero;
-        }
-
-        private void graphLayout_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            //graphLayout.HighlightAlgorithm = 
+           
         }
 
 
