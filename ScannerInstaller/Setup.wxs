@@ -195,10 +195,12 @@
         <Component  Win64="$(var.Win64)" Id="SolutionScanner.dll" Directory="INSTALLDIR" Guid="863EB0AE-157B-487A-A77B-5DA25071738C">
           <File Id="SolutionScanner.dll" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\SolutionScanner.dll" />
         </Component>
-        <!--<Component  Win64="$(var.Win64)" Id="mscorlib.resources.dll" Directory="pl" Guid="032C1A59-F4FF-4904-A5FB-72603E9E4A0C">
-          <File Id="mscorlib.resources.dll" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\pl\mscorlib.resources.dll" />
-        </Component>-->        
-        
+        <Component  Win64="$(var.Win64)" Id="FirstFloor.ModernUI.dll" Directory="INSTALLDIR" Guid="71608B36-17AB-49A0-BB1A-935F05B5BE26">
+          <File Id="FirstFloor.ModernUI.dll" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\FirstFloor.ModernUI.dll" />
+        </Component>
+        <Component  Win64="$(var.Win64)" Id="FirstFloor.ModernUI.xml" Directory="INSTALLDIR" Guid="72C81A10-0F10-43E3-824A-2B3CB056554D">
+          <File Id="FirstFloor.ModernUI.xml" KeyPath="yes" Source="$(var.RepositoryRoot)\DependencyVisualizerGraphX\bin\$(var.Configuration)\FirstFloor.ModernUI.xml" />
+        </Component>      
       </ComponentGroup>
 
   </Product>
