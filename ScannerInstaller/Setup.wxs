@@ -8,7 +8,7 @@
   <Product Id="$(var.ProductId)"
            Name="$(var.ProductName)"
            Language="!(loc.LANG)"
-           Version="$(var.SetupVersion)"
+           Version="!(bind.FileVersion.DependencyVisualizerGraphX.exe)"
            Manufacturer="$(var.ManufacturerName)"
            UpgradeCode="$(var.ProductUpgradeCode)">
 
