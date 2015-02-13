@@ -49,12 +49,16 @@ namespace DependencyVisualizerGraphX.Pages
 
     }
 
-    private void scanBtn_Click(object sender, RoutedEventArgs e)
+    private async void scanBtn_Click(object sender, RoutedEventArgs e)
     {
       scanBtn.IsEnabled = false;
       string path = RootPath.Text;
       SolutionDependencyScanner.Scanner s = new SolutionDependencyScanner.Scanner(path);
-      var sr = s.Scan();
+      SolutionDependencyScanProduct sr = null;
+      await Task.Factory.StartNew(async () =>
+      {
+          sr = s.Scan();
+      });
       slns.Clear();
       List<Solution> l = new List<Solution>();
       l.AddRange(sr.Solutions);
