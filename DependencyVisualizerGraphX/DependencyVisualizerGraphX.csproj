@@ -89,6 +89,8 @@
     <Compile Include="DependencyGraphLogicCore.cs" />
     <Compile Include="DependencyVertex.cs" />
     <Compile Include="GraphCreationOptions.cs" />
+    <Compile Include="GraphDecorators\IGraphDecorator.cs" />
+    <Compile Include="GraphDecorators\LayoutRouteDecorator.cs" />
     <Compile Include="GraphFactory.cs" />
     <Compile Include="GraphKeeper.cs" />
     <Compile Include="HighlightSpreadAnimation.cs" />
@@ -157,6 +159,7 @@
   <ItemGroup>
     <Resource Include="wookie.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
