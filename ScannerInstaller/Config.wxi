@@ -5,7 +5,7 @@
   <?define ManufacturerName = "AraimSoft" ?>
   <?define ProgramFileFolderName = "ShowMeTheWookie" ?>
   <?define ProgramDataFolderName = "ShowMeTheWookie" ?>
-  <?define SetupVersion="0.0.01" ?>
+
 
 
   <?define RepositoryRoot= "$(var.ProjectDir)..\" ?>
@@ -19,9 +19,9 @@
   <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
   <?else ?>
   <?define ProductDisplayName = "$(var.ProductName)" ?>
-  <?define ProductId = "{86E45014-8D61-45C7-97C0-7ADC6EE8B4C5}" ?>
+  <?define ProductId = "*" ?>
   <?define ProductUpgradeCode = "{C72FD301-4876-4D4E-8EC1-5248D8D624B2}" ?>
   <?define Win64 = "no" ?>
-  <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+  <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?> 
   <?endif ?>
 </Include>

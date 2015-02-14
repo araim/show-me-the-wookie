@@ -34,8 +34,13 @@
     <!-- #################################################################  -->
     <!-- - - - - - - - - - ..::     UPGRADE      ::..  - - - - - - - - - -  -->
     <!-- #################################################################  -->
-    
-    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+
+    <!--<Upgrade Id="27cb76c7-544e-465f-b1f3-b11d9a49e416">
+      <UpgradeVersion Minimum="0.8.0"
+                      IncludeMinimum="yes"
+                      Maximum="1.5.1"
+                      Property="OLDERVERSIONBEINGUPGRADED" />
+    </Upgrade>-->
 
     <!-- #################################################################  -->
     <!-- - - - - - - - - - ..::        PRQ       ::..  - - - - - - - - - -  -->
@@ -89,6 +94,7 @@
       <FileCost Sequence="900"></FileCost>
       <CostFinalize Sequence="1000"></CostFinalize>
       <InstallValidate Sequence="1400"></InstallValidate>
+      <RemoveExistingProducts Sequence="1410"></RemoveExistingProducts>
       <InstallInitialize Sequence="1500"></InstallInitialize>
       <ProcessComponents Sequence="1600"></ProcessComponents>
       <UnpublishFeatures Sequence="1800"></UnpublishFeatures>
