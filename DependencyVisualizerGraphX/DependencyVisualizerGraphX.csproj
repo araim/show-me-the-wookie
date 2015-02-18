@@ -100,7 +100,9 @@
     <Compile Include="Pages\GraphPresenter.xaml.cs">
       <DependentUpon>GraphPresenter.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ProjectVertex.cs" />
     <Compile Include="SolutionSerializableToNameAndPath.cs" />
+    <Compile Include="SolutionVertex.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

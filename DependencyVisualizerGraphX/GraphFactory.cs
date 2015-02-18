@@ -57,7 +57,7 @@ namespace DependencyVisualizerGraphX
         {
             if (!alreadySelectedProjects.Contains(p.ID))
             {
-                AddVertex(p);
+                AddProjectVertexAndRegisterProject(p);
             }
             ProcessImplicitProjectDependencies(p);
             ProcessReferencedProjects(p);
@@ -72,7 +72,7 @@ namespace DependencyVisualizerGraphX
                     string pname = scanProduct.Projects[subp.ID].AssemblyName;
                     if (!alreadySelectedProjects.Contains(subp.ID))
                     {
-                        AddVertex(pname, subp.ID);
+                        AddProjectVertexAndRegisterProject(pname, subp.ID);
                     }
                     AddEdge(p.AssemblyName, pname);
                 }
@@ -85,7 +85,7 @@ namespace DependencyVisualizerGraphX
             {
                 if (!alreadySelectedProjects.Contains(subp.ID))
                 {
-                    AddVertex(subp);
+                    AddProjectVertexAndRegisterProject(subp);
                     projectsToProcess.Enqueue(subp);
                 }
                 AddEdge(p.AssemblyName, subp.AssemblyName);
@@ -97,21 +97,26 @@ namespace DependencyVisualizerGraphX
             graph.AddEdge(new DependencyEdge(vertices[from], vertices[to], 1));
         }
 
-        private void AddVertex(Project p)
+        private void AddProjectVertexAndRegisterProject(Project p)
         {
-            AddVertex(p.AssemblyName, p.ID);
+            AddProjectVertexAndRegisterProject(p.AssemblyName, p.ID);
         }
 
-        private void AddVertex(string name)
+
+        private void AddVertex(DependencyVertex dv)
         {
-            var dv = new DependencyVertex(name);
-            vertices[name] = dv;
+            vertices[dv.Text] = dv;
             graph.AddVertex(dv);
         }
 
-        private void AddVertex(string name, string projectId)
+        private void AddSolutionVertex(string name)
         {
-            AddVertex(name);
+            AddVertex(new SolutionVertex(name));
+        }
+
+        private void AddProjectVertexAndRegisterProject(string name, string projectId)
+        {
+            AddVertex(new ProjectVertex(name));
             alreadySelectedProjects.Add(projectId);
         }
 
@@ -147,7 +152,7 @@ namespace DependencyVisualizerGraphX
 
         private void IncludeSolution(string name, IEnumerable<Project> cross)
         {
-            AddVertex(name);
+            AddSolutionVertex(name);
             foreach (var p in cross)
             {
                 AddEdge(name, p.AssemblyName);
