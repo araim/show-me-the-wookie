@@ -12,7 +12,7 @@ namespace DependencyVisualizerGraphX
         public ProjectVertex(string name)
             : base(name)
         {
-
+          Color = "#ff4985c9";
         }
     }
 }

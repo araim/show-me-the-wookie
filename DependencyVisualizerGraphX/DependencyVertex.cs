@@ -10,7 +10,7 @@ namespace DependencyVisualizerGraphX
     internal class DependencyVertex:VertexBase
     {
         public string Text { get; set; }
-
+        public string Color { get; set; }
 
         public override string ToString()
         {
@@ -20,11 +20,13 @@ namespace DependencyVisualizerGraphX
         public DependencyVertex()
             : this("")
         {
+          Color = "Aqua";
         }
 
         public DependencyVertex(string text = "")
         {
             Text = text;
+            Color = "Aqua";
         }
     }
 }

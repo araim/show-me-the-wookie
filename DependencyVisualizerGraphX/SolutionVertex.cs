@@ -11,7 +11,7 @@ namespace DependencyVisualizerGraphX
         public SolutionVertex(string name)
             : base(name)
         {
-
+          Color = "#ff6bc74a";
         }
     }
 }

@@ -39,6 +39,8 @@ namespace DependencyVisualizerGraphX.Pages
     public GraphPresenter()
     {
       InitializeComponent();
+      DataContext = this;
+
       GraphArea_Setup();
       Area.VertexDoubleClick += Area_VertexDoubleClick;
     }
