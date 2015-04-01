@@ -6,14 +6,26 @@
              xmlns:local="clr-namespace:DependencyVisualizerGraphX" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="600">
-  <Grid  HorizontalAlignment="Left" VerticalAlignment="Top" >
-     <TextBox Name="RootPath" Height="25" Margin="51,10,144,67"/>
-     <Button Margin="429,10,0,0"  Padding="5,0,5,0" DockPanel.Dock="Right" Width="37" Click="BrowseFolder" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25">...</Button>
+  <Grid  HorizontalAlignment="Left" VerticalAlignment="Top" Height="290" >
+    <TextBox Name="RootPath" Height="25" Margin="51,10,144,67" VerticalAlignment="Top"/>
+    <Button Margin="429,10,0,0"  Padding="5,0,5,0" DockPanel.Dock="Right" Width="37" Click="BrowseFolder" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25">...</Button>
 
 
-     <Button x:Name="scanBtn" Content="Scan" Margin ="499,10,10,67.4" Height="25" DockPanel.Dock ="Top" Click="scanBtn_Click"/>
-     <ComboBox Name ="SolutionList" ItemsSource ="{Binding ElementName=root,Path=Solutions}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="442" Height="25" Margin="10,57,0,0" IsEnabled="False" />
-     <Button x:Name="plotBtn" Content="Plot" Margin ="457,56,10,19" Height="25" DockPanel.Dock ="Top" Click="plotBtn_Click" IsEnabled="False"/>
-     <Label Content="Path:" HorizontalAlignment="Left" Margin="10,15,0,0" VerticalAlignment="Top" Height="25"/>
+    <Button x:Name="scanBtn" Content="Scan" Margin ="499,10,10,67.4" Height="25" DockPanel.Dock ="Top" Click="scanBtn_Click" VerticalAlignment="Top"/>
+    <Button x:Name="plotBtn" Content="Plot" Margin ="457,54,10,0" Height="187" DockPanel.Dock ="Top" Click="plotBtn_Click" IsEnabled="False" VerticalAlignment="Top"/>
+    <Label Content="Path:" HorizontalAlignment="Left" Margin="10,15,0,0" VerticalAlignment="Top" Height="25"/>
+    <GroupBox Header="Search" HorizontalAlignment="Left" Height="49" Margin="10,231,0,0" VerticalAlignment="Bottom" Width="306">
+      <TextBox x:Name="txtSearch" Height="25" Text="{Binding FindName}" TextWrapping="Wrap" VerticalAlignment="Top" TextChanged="txtSearch_TextChanged" IsEnabled="False"/>
+    </GroupBox>
+    <GroupBox Header="Solutions" HorizontalAlignment="Left" Height="196" Margin="10,45,0,0" VerticalAlignment="Top" Width="442">
+      <ListView x:Name="slnListView" Margin="0" SelectionChanged="slnListView_SelectionChanged">
+        <ListView.View>
+          <GridView>
+            <GridViewColumn Header="Name" Width="120" DisplayMemberBinding="{Binding Solution.Name}"/>
+            <GridViewColumn Header="Path" Width="250" DisplayMemberBinding="{Binding Solution.FullPath}"/>
+          </GridView>
+        </ListView.View>
+      </ListView>
+    </GroupBox>
   </Grid>
 </UserControl>

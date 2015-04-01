@@ -30,9 +30,12 @@ namespace DependencyVisualizerGraphX.Pages
     public Config()
     {
       InitializeComponent();
-      SolutionList.ItemsSource = slns;
-
+      
+      slnListView.ItemsSource = slns;
+      CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(slnListView.ItemsSource);
+      view.Filter = UserFilter;
     }
+
 
     private void BrowseFolder(object sender, RoutedEventArgs e)
     {
@@ -73,11 +76,17 @@ namespace DependencyVisualizerGraphX.Pages
       factory = new GraphFactory(sr);
 
       scanBtn.IsEnabled = true;
-      plotBtn.IsEnabled = true;
-      SolutionList.IsEnabled = true;
+     
+      txtSearch.IsEnabled = true;
     }
 
-
+    private bool UserFilter(object item)
+    {
+      if (String.IsNullOrEmpty(txtSearch.Text))
+        return true;
+      else
+        return ((item as SolutionSerializableToNameAndPath).Solution.Name.IndexOf(txtSearch.Text, StringComparison.OrdinalIgnoreCase) >= 0);
+    }
 
     private DependencyGraph CreateGraphForSolution(Solution sln)
     {
@@ -87,7 +96,7 @@ namespace DependencyVisualizerGraphX.Pages
     private void plotBtn_Click(object sender, RoutedEventArgs e)
     {
 
-      SolutionSerializableToNameAndPath slnser = SolutionList.SelectedItem as SolutionSerializableToNameAndPath;
+      SolutionSerializableToNameAndPath slnser = slnListView.SelectedItem as SolutionSerializableToNameAndPath;
       Solution sln = slnser.Solution;
 
       BBCodeBlock bcb = new BBCodeBlock();
@@ -104,6 +113,23 @@ namespace DependencyVisualizerGraphX.Pages
       }
 
      
+    }
+
+    private void txtSearch_TextChanged(object sender, TextChangedEventArgs e)
+    {
+      CollectionViewSource.GetDefaultView(slnListView.ItemsSource).Refresh();
+    }
+
+    private void slnListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      if (slnListView.SelectedItem != null)
+      {
+        plotBtn.IsEnabled = true;
+      }
+      else
+      {
+        plotBtn.IsEnabled = false;
+      }
     }
 
   }
