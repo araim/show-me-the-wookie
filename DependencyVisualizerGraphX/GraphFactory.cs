@@ -11,6 +11,7 @@ namespace DependencyVisualizerGraphX
     {
         private DependencyGraph graph;
         private ISet<string> alreadySelectedProjects;
+        private ISet<string> alreadySelectedSolutions;
         private Queue<Project> projectsToProcess;
         private Dictionary<string, DependencyVertex> vertices;
         private GraphCreationOptions options;
@@ -41,7 +42,8 @@ namespace DependencyVisualizerGraphX
         }
 
         private void IncludeRootSolution()
-        {
+        {        
+            alreadySelectedSolutions.Add(root.Name);
             IncludeSolution("SOLUTION : " + root.Name, root.Projects);
         }
 
@@ -134,6 +136,7 @@ namespace DependencyVisualizerGraphX
             graph = new DependencyGraph();
             options = opts;
             alreadySelectedProjects = new HashSet<string>();
+            alreadySelectedSolutions = new HashSet<string>();
             projectsToProcess = new Queue<Project>();
             vertices = new Dictionary<string, DependencyVertex>();
         }
@@ -145,13 +148,17 @@ namespace DependencyVisualizerGraphX
                 var cross = s.Projects.Where((el, idx) => alreadySelectedProjects.Contains(el.ID));
                 if (cross.Count() > 0)
                 {
-                    IncludeSolution("SOLUTION:" + s.Name, cross);
+                    if (!alreadySelectedSolutions.Contains(s.Name))
+                    {
+                        alreadySelectedSolutions.Add(s.Name);
+                        IncludeSolution("SOLUTION:" + s.Name, cross);
+                    }
                 }
             }
         }
 
         private void IncludeSolution(string name, IEnumerable<Project> cross)
-        {
+        {            
             AddSolutionVertex(name);
             foreach (var p in cross)
             {
